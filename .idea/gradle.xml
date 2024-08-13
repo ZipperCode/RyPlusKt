@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/framework" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-core" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-doc" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-email" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-encrypt" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-idempotent" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-job" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-json" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-log" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-mybatis" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-ratelimiter" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-redis" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-satoken" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-security" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-social" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-tenant" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-translation" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-web" />
+            <option value="$PROJECT_DIR$/framework/boot-starter-websocket" />
+            <option value="$PROJECT_DIR$/framework/common-excel" />
+            <option value="$PROJECT_DIR$/framework/common-oss" />
+            <option value="$PROJECT_DIR$/framework/common-sensitive" />
+            <option value="$PROJECT_DIR$/modules" />
+            <option value="$PROJECT_DIR$/modules/system" />
+            <option value="$PROJECT_DIR$/server" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+    <option name="parallelModelFetch" value="true" />
+  </component>
+</project>

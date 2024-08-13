@@ -1,0 +1,5 @@
+com.zipper.framework.web.config.CaptchaConfig
+com.zipper.framework.web.config.FilterConfig
+com.zipper.framework.web.config.I18nConfig
+com.zipper.framework.web.config.ResourcesConfig
+com.zipper.framework.web.config.UndertowConfig

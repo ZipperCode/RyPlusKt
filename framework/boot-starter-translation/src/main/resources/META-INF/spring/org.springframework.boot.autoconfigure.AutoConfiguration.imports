@@ -1,0 +1,6 @@
+com.zipper.framework.translation.config.TranslationConfig
+com.zipper.framework.translation.core.impl.DeptNameTranslationImpl
+com.zipper.framework.translation.core.impl.DictTypeTranslationImpl
+com.zipper.framework.translation.core.impl.OssUrlTranslationImpl
+com.zipper.framework.translation.core.impl.UserNameTranslationImpl
+com.zipper.framework.translation.core.impl.NicknameTranslationImpl
