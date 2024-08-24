@@ -10,14 +10,27 @@ import com.zipper.framework.core.utils.StringUtilsExt.format
  * @author Lion Li
  */
 abstract class BaseController {
+
+    protected fun success(): R<Void> {
+        return R.ok()
+    }
+
+    protected fun <T> success(data: T): R<T> {
+        return R.ok(data)
+    }
+
+    protected fun <T> successOrNull(data: T): R<T?> {
+        return R.ok(data)
+    }
+
     /**
      * 响应返回结果
      *
      * @param rows 影响行数
      * @return 操作结果
      */
-    protected fun toAjax(rows: Int): R<Void> {
-        return if (rows > 0) R.ok() else R.fail()
+    protected fun toAjax(rows: Number): R<Void> {
+        return if (rows.toInt() > 0) R.ok() else R.fail()
     }
 
     /**

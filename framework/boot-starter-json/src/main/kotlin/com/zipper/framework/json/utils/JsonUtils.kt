@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Dict
 import cn.hutool.core.util.ArrayUtil
 import cn.hutool.core.util.ObjectUtil
 import cn.hutool.extra.spring.SpringUtil
+import cn.hutool.json.JSONUtil
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -32,11 +33,16 @@ object JsonUtils {
         }
     }
 
-    @JvmStatic
-    fun <T> parseObject(text: String?, clazz: Class<T>?): T? {
-        if (text.isNullOrEmpty()) {
-            return null
+    fun toJson(target: Any): String {
+        return try {
+            objectMapper.writeValueAsString(target)
+        } catch (e: JsonProcessingException) {
+            throw RuntimeException(e)
         }
+    }
+
+    @JvmStatic
+    fun <T> parseObject(text: String?, clazz: Class<T>): T {
         try {
             return objectMapper.readValue(text, clazz)
         } catch (e: IOException) {
@@ -45,7 +51,16 @@ object JsonUtils {
     }
 
     @JvmStatic
-    fun <T> parseObject(bytes: ByteArray?, clazz: Class<T>?): T? {
+    fun <T> parseObject(json: String, path: String, type: Class<T>): T {
+        return try {
+            objectMapper.readValue(objectMapper.readTree(json).path(path).toString(), type)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+    }
+
+    @JvmStatic
+    fun <T> parseObject(bytes: ByteArray?, clazz: Class<T>): T? {
         if (ArrayUtil.isEmpty(bytes)) {
             return null
         }
@@ -61,6 +76,15 @@ object JsonUtils {
         if (text.isNullOrEmpty()) {
             return null
         }
+        try {
+            return objectMapper.readValue(text, typeReference)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+    }
+
+    @JvmStatic
+    fun <T> parseObjectReference(text: String, typeReference: TypeReference<T>): T {
         try {
             return objectMapper.readValue(text, typeReference)
         } catch (e: IOException) {
@@ -117,5 +141,13 @@ object JsonUtils {
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
+    }
+
+    fun <T> mapToObjectNonClassId(map: Map<String, Any>, clazz: Class<T>): T {
+        return JSONUtil.toBean(toJson(map), clazz)
+    }
+
+    inline fun <reified T> createReference(): TypeReference<T> {
+        return object : TypeReference<T>(){}
     }
 }

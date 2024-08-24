@@ -14,3 +14,9 @@ fun <T> Any.forceCast(): T {
 fun <T> Any?.forceCastOrNull(): T? {
     return this as? T?
 }
+
+inline fun <reified T> Any?.withType(block: T.() -> Unit) {
+    if (this is T) {
+        block()
+    }
+}

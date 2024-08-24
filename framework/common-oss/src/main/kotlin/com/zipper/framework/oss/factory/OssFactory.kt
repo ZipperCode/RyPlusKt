@@ -4,7 +4,7 @@ import com.zipper.framework.json.utils.JsonUtils
 import com.zipper.framework.oss.constant.OssConstant
 import com.zipper.framework.oss.core.OssClient
 import com.zipper.framework.oss.exception.OssException
-import com.zipper.framework.oss.properties.OssProperties
+import com.zipper.framework.oss.core.OssConfig
 import com.zipper.framework.redis.utils.CacheUtils
 import com.zipper.framework.redis.utils.RedisUtils
 import com.zipper.framework.core.constant.CacheNames
@@ -38,7 +38,7 @@ object OssFactory {
     fun instance(configKey: String): OssClient {
         val json: String = CacheUtils.get(CacheNames.SYS_OSS_CONFIG, configKey)
             ?: throw OssException("系统异常, '$configKey'配置信息不存在!")
-        val properties: OssProperties = JsonUtils.parseObject(json, OssProperties::class.java)
+        val properties: OssConfig = JsonUtils.parseObject(json, OssConfig::class.java)
             ?: throw OssException("系统异常, '$configKey'配置信息不存在!")
         // 使用租户标识避免多个租户相同key实例覆盖
         val key: String = properties.tenantId + ":" + configKey
@@ -53,6 +53,18 @@ object OssFactory {
             CLIENT_CACHE[key] = OssClient(configKey, properties)
             log.info("重载OSS实例 key => {}", configKey)
             return CLIENT_CACHE[key]!!
+        }
+        return client
+    }
+
+    @Synchronized
+    fun getInstance(cacheKey: String, config: OssConfig): OssClient {
+        var client = CLIENT_CACHE[cacheKey]
+        if (client == null || client.checkPropertiesSame(config)) {
+            client = OssClient(cacheKey, config)
+            log.info("创建OSS 实例 key => {}", cacheKey)
+            CLIENT_CACHE[cacheKey] = client
+            return client
         }
         return client
     }

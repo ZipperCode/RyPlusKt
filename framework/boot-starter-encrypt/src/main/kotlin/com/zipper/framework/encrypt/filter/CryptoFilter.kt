@@ -22,7 +22,7 @@ import java.io.IOException
  *
  * @author wdhcr
  */
-class CryptoFilter(private val properties: com.zipper.framework.encrypt.config.properties.ApiDecryptProperties) : Filter {
+class CryptoFilter(private val properties: ApiDecryptProperties) : Filter {
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val servletRequest = request as HttpServletRequest
@@ -84,18 +84,18 @@ class CryptoFilter(private val properties: com.zipper.framework.encrypt.config.p
     /**
      * 获取 ApiEncrypt 注解
      */
-    private fun getApiEncryptAnnotation(servletRequest: HttpServletRequest): com.zipper.framework.encrypt.annotation.ApiEncrypt? {
+    private fun getApiEncryptAnnotation(servletRequest: HttpServletRequest): ApiEncrypt? {
         val handlerMapping: RequestMappingHandlerMapping =
             SpringUtil.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping::class.java)
         // 获取注解
         try {
             val mappingHandler = handlerMapping.getHandler(servletRequest)
             if (ObjectUtil.isNotNull(mappingHandler)) {
-                val handler = mappingHandler.handler
+                val handler = mappingHandler?.handler
                 if (ObjectUtil.isNotNull(handler)) {
                     // 从handler获取注解
                     if (handler is HandlerMethod) {
-                        return handler.getMethodAnnotation(com.zipper.framework.encrypt.annotation.ApiEncrypt::class.java)
+                        return handler.getMethodAnnotation(ApiEncrypt::class.java)
                     }
                 }
             }

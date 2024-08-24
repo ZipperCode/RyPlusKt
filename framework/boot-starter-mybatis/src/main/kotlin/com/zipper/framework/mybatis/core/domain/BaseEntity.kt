@@ -25,6 +25,7 @@ abstract class BaseEntity : Serializable {
     /**
      * 创建部门
      */
+    @Deprecated("no used")
     @TableField(fill = FieldFill.INSERT)
     var createDept: Long? = null
 

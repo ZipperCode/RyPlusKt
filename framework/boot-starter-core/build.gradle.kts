@@ -4,6 +4,10 @@ plugins {
     id("module")
 }
 
+allOpen{
+    annotation("com.zipper.framework.core.annotation.NoArgs")
+}
+
 dependencies {
     implementation(Libs.SpringBoot.Starter)
     implementation(Libs.SpringBoot.Web)
@@ -22,4 +26,5 @@ dependencies {
     implementation(Libs.MapStruct.PlusStarter)
     annotationProcessor(Libs.MapStruct.PlusProcessor)
 
+    api(Libs.Google.Guava)
 }

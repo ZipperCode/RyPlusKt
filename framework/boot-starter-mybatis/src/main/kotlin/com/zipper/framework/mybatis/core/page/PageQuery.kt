@@ -17,7 +17,7 @@ import java.io.Serializable
  *
  * @author Lion Li
  */
-class PageQuery : Serializable {
+open class PageQuery : Serializable {
     /**
      * 分页大小
      */

@@ -1,4 +1,6 @@
-package com.zipper.framework.oss.properties
+package com.zipper.framework.oss.core
+
+import com.zipper.framework.core.annotation.NoArgs
 
 
 /**
@@ -6,54 +8,53 @@ package com.zipper.framework.oss.properties
  *
  * @author Lion Li
  */
-class OssProperties {
-    /**
-     * 租户id
-     */
-    var tenantId: String? = null
-
+@NoArgs
+data class OssConfig(
     /**
      * 访问站点
      */
-    var endpoint: String? = null
+    var endpoint: String,
 
     /**
      * 自定义域名
      */
-    var domain: String? = null
-
-    /**
-     * 前缀
-     */
-    var prefix: String? = null
+    var domain: String,
 
     /**
      * ACCESS_KEY
      */
-    var accessKey: String? = null
+    var accessKey: String,
 
     /**
      * SECRET_KEY
      */
-    var secretKey: String? = null
+    var secretKey: String,
 
     /**
      * 存储空间名
      */
-    var bucketName: String = ""
+    var bucketName: String,
 
     /**
      * 存储区域
      */
-    var region: String? = null
+    var region: String,
+
+    /**
+     * 前缀
+     */
+    var prefix: String = "",
 
     /**
      * 是否https（Y=是,N=否）
      */
-    var isHttps: String = "N"
+    var isHttps: String = "N",
 
     /**
      * 桶权限类型(0private 1public 2custom)
      */
     var accessPolicy: String = "0"
+) {
+
+    var tenantId: String = ""
 }

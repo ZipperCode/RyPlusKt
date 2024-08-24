@@ -26,7 +26,7 @@ object Libs {
         const val Quartz = "org.springframework.boot:spring-boot-starter-quartz"
         const val Validation = "org.springframework.boot:spring-boot-starter-validation"
 
-        const val Doc = "org.springdoc:springdoc-openapi-starter-webmvc-api"
+        const val Doc = "org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0"
 
         const val Json = "org.springframework.boot:spring-boot-starter-json"
 
@@ -210,5 +210,9 @@ object Libs {
         object Sms4j {
             const val Core = "org.dromara.sms4j:sms4j:2.2.0"
         }
+    }
+
+    object Google {
+        const val Guava = "com.google.guava:guava:31.1-jre"
     }
 }

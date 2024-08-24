@@ -21,7 +21,6 @@ import com.zipper.framework.oss.entity.UploadResult
 import com.zipper.framework.oss.enumd.AccessPolicyType
 import com.zipper.framework.oss.enumd.PolicyType
 import com.zipper.framework.oss.exception.OssException
-import com.zipper.framework.oss.properties.OssProperties
 import org.apache.commons.lang3.StringUtils
 import com.zipper.framework.core.utils.DateUtilsExt
 import java.io.ByteArrayInputStream
@@ -35,17 +34,16 @@ import java.util.*
  *
  * @author Lion Li
  */
-class OssClient(val configKey: String, private val properties: OssProperties) {
+class OssClient(val configKey: String, private val config: OssConfig) {
     private val client: AmazonS3
 
     init {
         try {
-            val endpointConfig = AwsClientBuilder.EndpointConfiguration(properties.endpoint, properties.region)
-
-            val credentials: AWSCredentials = BasicAWSCredentials(properties.accessKey, properties.secretKey)
+            val endpointConfig = AwsClientBuilder.EndpointConfiguration(config.endpoint, config.region)
+            val credentials: AWSCredentials = BasicAWSCredentials(config.accessKey, config.secretKey)
             val credentialsProvider: AWSCredentialsProvider = AWSStaticCredentialsProvider(credentials)
             val clientConfig = ClientConfiguration()
-            if (OssConstant.IS_HTTPS == properties.isHttps) {
+            if (OssConstant.IS_HTTPS == config.isHttps) {
                 clientConfig.protocol = Protocol.HTTPS
             } else {
                 clientConfig.protocol = Protocol.HTTP
@@ -55,7 +53,7 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
                 .withClientConfiguration(clientConfig)
                 .withCredentials(credentialsProvider)
                 .disableChunkedEncoding()
-            if (!StringUtils.containsAny(properties.endpoint, *OssConstant.CLOUD_SERVICE)) {
+            if (!StringUtils.containsAny(config.endpoint, *OssConstant.CLOUD_SERVICE)) {
                 // minio 使用https限制使用域名访问 需要此配置 站点填域名
                 build.enablePathStyleAccess()
             }
@@ -72,7 +70,7 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
 
     private fun createBucket() {
         try {
-            val bucketName = properties.bucketName
+            val bucketName = config.bucketName
             if (client.doesBucketExistV2(bucketName)) {
                 return
             }
@@ -98,7 +96,7 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
             val metadata = ObjectMetadata()
             metadata.contentType = contentType
             metadata.contentLength = byteArrayInputStream.available().toLong()
-            val putObjectRequest = PutObjectRequest(properties.bucketName, path, byteArrayInputStream, metadata)
+            val putObjectRequest = PutObjectRequest(config.bucketName, path, byteArrayInputStream, metadata)
             // 设置上传对象的 Acl 为公共读
             putObjectRequest.cannedAcl = getAccessPolicy().acl
             client.putObject(putObjectRequest)
@@ -111,7 +109,7 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
 
     fun upload(file: File?, path: String): UploadResult {
         try {
-            val putObjectRequest = PutObjectRequest(properties.bucketName, path, file)
+            val putObjectRequest = PutObjectRequest(config.bucketName, path, file)
             // 设置上传对象的 Acl 为公共读
             putObjectRequest.cannedAcl = getAccessPolicy().acl
             client.putObject(putObjectRequest)
@@ -123,22 +121,22 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
 
     fun delete(path: String) {
         try {
-            client.deleteObject(properties.bucketName, path.replace("${getUrl()}/", ""))
+            client.deleteObject(config.bucketName, path.replace("${getUrl()}/", ""))
         } catch (e: Exception) {
             throw OssException("删除文件失败，请检查配置信息:[" + e.message + "]")
         }
     }
 
     fun uploadSuffix(data: ByteArray?, suffix: String, contentType: String?): UploadResult {
-        return upload(data, getPath(properties.prefix, suffix), contentType)
+        return upload(data, getPath(config.prefix, suffix), contentType)
     }
 
     fun uploadSuffix(inputStream: InputStream, suffix: String, contentType: String?): UploadResult {
-        return upload(inputStream, getPath(properties.prefix, suffix), contentType)
+        return upload(inputStream, getPath(config.prefix, suffix), contentType)
     }
 
     fun uploadSuffix(file: File?, suffix: String): UploadResult {
-        return upload(file, getPath(properties.prefix, suffix))
+        return upload(file, getPath(config.prefix, suffix))
     }
 
     /**
@@ -147,29 +145,29 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
      * @param path 完整文件路径
      */
     fun getObjectMetadata(path: String): ObjectMetadata {
-        return client.getObject(properties.bucketName, path.replace("${getUrl()}/", "")).objectMetadata
+        return client.getObject(config.bucketName, path.replace("${getUrl()}/", "")).objectMetadata
     }
 
     fun getObjectContent(path: String): InputStream {
-        return client.getObject(properties.bucketName, path.replace("$${getUrl()}/", "")).objectContent
+        return client.getObject(config.bucketName, path.replace("$${getUrl()}/", "")).objectContent
     }
 
     fun getUrl(): String {
-        val domain = properties.domain
-        val endpoint = properties.endpoint
-        val header = if (OssConstant.IS_HTTPS == properties.isHttps) "https://" else "http://"
+        val domain = config.domain
+        val endpoint = config.endpoint
+        val header = if (OssConstant.IS_HTTPS == config.isHttps) "https://" else "http://"
         // 云服务商直接返回
         if (StringUtils.containsAny(endpoint, *OssConstant.CLOUD_SERVICE)) {
             if (StringUtils.isNotBlank(domain)) {
                 return header + domain
             }
-            return (header + properties.bucketName) + "." + endpoint
+            return (header + config.bucketName) + "." + endpoint
         }
         // minio 单独处理
         if (StringUtils.isNotBlank(domain)) {
-            return header + domain + "/" + properties.bucketName
+            return header + domain + "/" + config.bucketName
         }
-        return header + endpoint + "/" + properties.bucketName
+        return header + endpoint + "/" + config.bucketName
     }
 
 
@@ -193,7 +191,7 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
      */
     fun getPrivateUrl(objectKey: String?, second: Int): String {
         val generatePresignedUrlRequest =
-            GeneratePresignedUrlRequest(properties.bucketName, objectKey)
+            GeneratePresignedUrlRequest(config.bucketName, objectKey)
                 .withMethod(HttpMethod.GET)
                 .withExpiration(Date(System.currentTimeMillis() + 1000L * second))
         val url = client.generatePresignedUrl(generatePresignedUrlRequest)
@@ -203,8 +201,8 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
     /**
      * 检查配置是否相同
      */
-    fun checkPropertiesSame(properties: OssProperties): Boolean {
-        return this.properties == properties
+    fun checkPropertiesSame(properties: OssConfig): Boolean {
+        return this.config == properties
     }
 
     /**
@@ -213,10 +211,11 @@ class OssClient(val configKey: String, private val properties: OssProperties) {
      * @return 当前桶权限类型code
      */
     fun getAccessPolicy(): AccessPolicyType {
-        return AccessPolicyType.getByType(properties.accessPolicy)
+        return AccessPolicyType.getByType(config.accessPolicy)
     }
 
     companion object {
+
         private fun getPolicy(bucketName: String?, policyType: PolicyType): String {
             val builder = StringBuilder()
             builder.append("{\n\"Statement\": [\n{\n\"Action\": [\n")

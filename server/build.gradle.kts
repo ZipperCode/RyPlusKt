@@ -21,12 +21,14 @@ dependencies {
     implementation(project(":framework:boot-starter-encrypt"))
     implementation(project(":framework:boot-starter-ratelimiter"))
     implementation(project(":framework:boot-starter-email"))
+    implementation(project(":framework:boot-starter-doc"))
 //    implementation(project(":framework:common-oss"))
 //    implementation(project(":framework:common-sensitive"))
 //    implementation(project(":framework:common-excel"))
     implementation(project(":framework:boot-starter-social"))
 
     implementation(project(":modules:system"))
+    implementation(project(":modules:system-storage"))
 
     implementation(Libs.Dromara.Sms4j.Core)
 

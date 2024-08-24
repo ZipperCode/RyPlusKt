@@ -44,6 +44,7 @@
             <option value="$PROJECT_DIR$/framework/common-sensitive" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/system" />
+            <option value="$PROJECT_DIR$/modules/system-storage" />
             <option value="$PROJECT_DIR$/server" />
           </set>
         </option>

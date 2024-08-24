@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil
 import cn.hutool.core.map.MapUtil
 import cn.hutool.core.util.ObjectUtil
 import cn.hutool.extra.spring.SpringUtil
+import com.zipper.framework.core.ext.log
+import io.github.linpeilie.ConvertException
 import io.github.linpeilie.Converter
 
 /**
@@ -29,6 +31,16 @@ object MapstructUtils {
     @JvmStatic
     fun <T, V> convert(source: T, desc: Class<V>): V {
         return CONVERTER.convert(source, desc)
+    }
+
+    @JvmStatic
+    fun <T, V> convertOrNull(source: T, desc: Class<V>): V? {
+        return try {
+            CONVERTER.convert(source, desc)
+        } catch (e: ConvertException) {
+            log.error("Bean转换异常", e)
+            return null
+        }
     }
 
     /**

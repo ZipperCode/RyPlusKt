@@ -16,19 +16,19 @@ class ServiceException : RuntimeException {
     /**
      * 错误码
      */
-    var code: Int = R.FAIL
+    final var code: Int = R.FAIL
         private set
 
     /**
      * 错误提示
      */
-    override var message: String = ""
+    final override var message: String = ""
         private set
 
     /**
      * 错误明细，内部调试错误
      */
-    var detailMessage: String? = null
+    final var detailMessage: String? = null
         private set
 
     constructor(): super()

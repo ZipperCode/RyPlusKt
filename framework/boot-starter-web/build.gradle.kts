@@ -11,5 +11,6 @@ dependencies {
     implementation(Libs.SpringBoot.Actuator)
     implementation(Libs.Apache.Commons.Lang3)
     implementation(Libs.Alibaba.ThreadLocal)
+    implementation(Libs.SpringBoot.Doc)
 //    implementation(Libs.Jakarta.Servlet)
 }

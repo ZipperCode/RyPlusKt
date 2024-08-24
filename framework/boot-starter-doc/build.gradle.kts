@@ -8,6 +8,6 @@ dependencies {
     implementation(project(":framework:boot-starter-core"))
 
 //    implementation(Libs.SpringDoc.webApi)
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
+    api(Libs.SpringBoot.Doc)
     implementation(Libs.Therapi.Core)
 }

@@ -56,7 +56,7 @@ class SpringDocConfig(
         openApi.paths(properties.paths)
         openApi.components(properties.components)
         val securityRequirement = SecurityRequirement()
-        properties.components.securitySchemes.keys.forEach {
+        properties.components.securitySchemes?.keys?.forEach {
             securityRequirement.addList(it)
         }
         openApi.security(listOf(securityRequirement))

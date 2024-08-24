@@ -7,6 +7,8 @@ repositories {
 
 dependencies {
 //    compileOnly("org.jetbrains.kotlin.gradle.plugin:1.9.20")
+    compileOnly("org.springframework.boot:spring-boot-gradle-plugin:3.3.1")
+    compileOnly("org.jetbrains.kotlin:kotlin-allopen:1.9.20")
 }
 
 gradlePlugin {

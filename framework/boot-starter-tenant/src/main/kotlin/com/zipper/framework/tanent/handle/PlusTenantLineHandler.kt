@@ -31,19 +31,19 @@ class PlusTenantLineHandler(
     }
 
     override fun ignoreTable(tableName: String): Boolean {
-        val tenantId: String? = TenantHelper.tenantId
-        // 判断是否有租户
-        if (StringUtils.isNotBlank(tenantId)) {
-            // 不需要过滤租户的表
-            val excludes = tenantProperties.excludes
-            // 非业务表
-            val tables: MutableList<String> = ListUtil.toList(
-                "gen_table",
-                "gen_table_column"
-            )
-            tables.addAll(excludes)
-            return tables.contains(tableName)
-        }
+//        val tenantId: String? = TenantHelper.tenantId
+//        // 判断是否有租户
+//        if (StringUtils.isNotBlank(tenantId)) {
+//            // 不需要过滤租户的表
+//            val excludes = tenantProperties.excludes
+//            // 非业务表
+//            val tables: MutableList<String> = ListUtil.toList(
+//                "gen_table",
+//                "gen_table_column"
+//            )
+//            tables.addAll(excludes)
+//            return tables.contains(tableName)
+//        }
         return true
     }
 }

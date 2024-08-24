@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import com.zipper.framework.core.ext.log
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDateTime
@@ -35,11 +36,13 @@ class JacksonConfig {
             val javaTimeModule = JavaTimeModule()
             javaTimeModule.addSerializer(Long::class.java, BigNumberSerializer.INSTANCE)
             javaTimeModule.addSerializer(java.lang.Long.TYPE, BigNumberSerializer.INSTANCE)
+            javaTimeModule.addSerializer(java.lang.Long::class.java, BigNumberSerializer.INSTANCE)
             javaTimeModule.addSerializer(BigInteger::class.java, BigNumberSerializer.INSTANCE)
             javaTimeModule.addSerializer(BigDecimal::class.java, ToStringSerializer.instance)
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             javaTimeModule.addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(formatter))
             javaTimeModule.addDeserializer(LocalDateTime::class.java, LocalDateTimeDeserializer(formatter))
+            javaTimeModule.addSerializer(MultipartFile::class.java, ToStringSerializer.instance)
             builder.modules(javaTimeModule)
             builder.timeZone(TimeZone.getDefault())
             log.info("初始化 jackson 配置")

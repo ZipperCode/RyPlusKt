@@ -72,7 +72,7 @@ class AuthController(
     @ApiEncrypt
     @PostMapping("/login")
     fun login(@RequestBody body: String?): R<LoginVo> {
-        val loginBody = parseObject(body, LoginBody::class.java) ?: throw ServiceException("参数不能为空")
+        val loginBody = parseObject(body, LoginBody::class.java)
         validate(loginBody)
         // 授权类型和客户端id
         val clientId = loginBody.clientId

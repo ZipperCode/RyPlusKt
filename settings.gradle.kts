@@ -34,5 +34,5 @@ include("framework:boot-starter-tenant")
 
 include(":modules")
 include("modules:system")
-findProject(":modules:system")?.name = "system"
 include("server")
+include("modules:system-storage")

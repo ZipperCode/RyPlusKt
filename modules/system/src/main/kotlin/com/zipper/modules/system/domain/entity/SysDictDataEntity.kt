@@ -1,5 +1,6 @@
 package com.zipper.modules.system.domain.entity
 
+import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
 import com.zipper.framework.tanent.core.TenantEntity
@@ -18,7 +19,7 @@ class SysDictDataEntity : TenantEntity() {
     /**
      * 字典编码
      */
-    @field:TableId(value = "dict_code")
+    @TableId(value = "dict_code")
     var dictCode: Long? = null
 
     /**

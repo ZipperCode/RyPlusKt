@@ -15,13 +15,13 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
  *
  * @author Lion Li
  */
-@ConfigurationProperties(prefix = "springdoc")
+@ConfigurationProperties(prefix = "boot-doc")
 class SpringDocProperties {
     /**
      * 文档基本信息
      */
     @NestedConfigurationProperty
-    val info = InfoProperties()
+    val info:InfoProperties = InfoProperties()
 
     /**
      * 扩展文档地址

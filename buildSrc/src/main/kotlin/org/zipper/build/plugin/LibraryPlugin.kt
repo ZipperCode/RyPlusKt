@@ -34,8 +34,10 @@ class LibraryPlugin : Plugin<Project> {
                      exclude("org.springframework.boot", "spring-boot-starter-tomcat")
                 }
                 implementation(Libs.SpringBoot.Underow)
+                implementation(Libs.SpringBoot.Validation)
                 implementation(Libs.AspectJ.Core)
                 implementation(Libs.Apache.Commons.Lang3)
+
             }
 
             try {

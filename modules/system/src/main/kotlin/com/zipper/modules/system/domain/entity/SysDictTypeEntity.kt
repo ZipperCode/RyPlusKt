@@ -1,5 +1,6 @@
 package com.zipper.modules.system.domain.entity
 
+import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
 import com.zipper.framework.tanent.core.TenantEntity
@@ -17,7 +18,7 @@ class SysDictTypeEntity : TenantEntity() {
     /**
      * 字典主键
      */
-    @field:TableId(value = "dict_id")
+    @TableId(value = "dict_id", type = IdType.AUTO)
     var dictId: Long? = null
 
     /**
