@@ -1,8 +1,12 @@
 package com.zipper.modules.storage.client.s3
 
 import com.zipper.framework.core.annotation.NoArgs
+import com.zipper.framework.core.validate.AddGroup
+import com.zipper.framework.core.validate.EditGroup
 import com.zipper.modules.storage.client.FileClientConfig
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 import org.hibernate.validator.constraints.URL
 
 @NoArgs
@@ -15,7 +19,12 @@ data class S3FileClientConfig(
      * 4. 七牛云：https://developer.qiniu.com/kodo/4088/s3-access-domainname
      * 5. 华为云：https://developer.huaweicloud.com/endpoint?OBS
      */
-    @field:NotNull(message = "endpoint 不能为空")
+    @field:NotBlank(message = "访问站点不能为空", groups = [AddGroup::class, EditGroup::class])
+    @field:Size(
+        min = 2,
+        max = 100,
+        message = "endpoint长度必须介于{min}和{max}之间"
+    )
     val endpoint: String,
     /**
      * 自定义域名
@@ -31,7 +40,12 @@ data class S3FileClientConfig(
     /**
      * 存储 Bucket
      */
-    @field:NotNull(message = "bucket 不能为空")
+    @field:NotBlank(message = "桶名称不能为空", groups = [AddGroup::class, EditGroup::class])
+    @field:Size(
+        min = 2,
+        max = 100,
+        message = "bucketName长度必须介于{min}和{max}之间"
+    )
     val bucket: String,
     /**
      * 访问 Key
@@ -41,12 +55,22 @@ data class S3FileClientConfig(
      * 4. 七牛云：https://portal.qiniu.com/user/key
      * 5. 华为云：https://support.huaweicloud.com/qs-obs/obs_qs_0005.html
      */
-    @field:NotNull(message = "accessKey 不能为空")
+    @field:NotBlank(message = "accessKey不能为空", groups = [AddGroup::class, EditGroup::class])
+    @field:Size(
+        min = 2,
+        max = 100,
+        message = "accessKey长度必须介于{min}和{max} 之间"
+    )
     val accessKey: String,
     /**
      * 访问 Secret
      */
-    @field:NotNull(message = "accessSecret 不能为空")
+    @field:NotBlank(message = "secretKey不能为空", groups = [AddGroup::class, EditGroup::class])
+    @field:Size(
+        min = 2,
+        max = 100,
+        message = "secretKey长度必须介于{min}和{max} 之间"
+    )
     val accessSecret: String,
     /**
      * 区域
