@@ -1,15 +1,9 @@
-package com.zipper.modules.system.service.tenant
+package com.zipper.modules.tenant.service
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
-import com.zipper.modules.system.domain.bo.SysTenantPackageBo
-import com.zipper.modules.system.domain.entity.SysTenantEntity
-import com.zipper.modules.system.domain.entity.SysTenantPackageEntity
-import com.zipper.modules.system.domain.vo.SysTenantPackageVo
-import com.zipper.modules.system.mapper.SysTenantMapper
-import com.zipper.modules.system.mapper.SysTenantPackageMapper
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +11,14 @@ import com.zipper.framework.core.constant.TenantConstants
 import com.zipper.framework.core.exception.ServiceException
 import com.zipper.framework.core.utils.MapstructUtils
 import com.zipper.framework.core.utils.MapstructUtils.convert
+import com.zipper.framework.mybatis.core.MybatisKt
+import com.zipper.modules.tenant.domain.entity.SysTenantEntity
+import com.zipper.modules.tenant.domain.entity.SysTenantPackageEntity
+import com.zipper.modules.tenant.domain.param.SysTenantPackageQueryParam
+import com.zipper.modules.tenant.domain.param.SysTenantPackageSaveParam
+import com.zipper.modules.tenant.domain.vo.SysTenantPackageVo
+import com.zipper.modules.tenant.mapper.SysTenantMapper
+import com.zipper.modules.tenant.mapper.SysTenantPackageMapper
 
 /**
  * 租户套餐Service业务层处理
@@ -24,7 +26,10 @@ import com.zipper.framework.core.utils.MapstructUtils.convert
  * @author Michelle.Chung
  */
 @Service
-class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper, private val tenantMapper: SysTenantMapper) :
+class SysTenantPackageServiceImpl(
+    private val baseMapper: SysTenantPackageMapper,
+    private val tenantMapper: SysTenantMapper
+) :
     ISysTenantPackageService {
     /**
      * 查询租户套餐
@@ -36,15 +41,15 @@ class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper
     /**
      * 查询租户套餐列表
      */
-    override fun queryPageList(bo: SysTenantPackageBo, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo> {
-        val lqw = buildQueryWrapper(bo)
+    override fun queryPageList(param: SysTenantPackageQueryParam, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo> {
+        val lqw = buildQueryWrapper(param)
         val result = baseMapper.selectVoPage<Page<SysTenantPackageVo>>(pageQuery.build(), lqw)
         return TableDataInfo.build(result)
     }
 
     override fun selectList(): List<SysTenantPackageVo> {
         return baseMapper.selectVoList(
-            KtQueryWrapper(SysTenantPackageEntity::class.java)
+            MybatisKt.ktQuery<SysTenantPackageEntity>()
                 .eq(SysTenantPackageEntity::status, TenantConstants.NORMAL)
         )
     }
@@ -52,12 +57,12 @@ class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper
     /**
      * 查询租户套餐列表
      */
-    override fun queryList(bo: SysTenantPackageBo): List<SysTenantPackageVo> {
-        val lqw = buildQueryWrapper(bo)
+    override fun queryList(param: SysTenantPackageQueryParam): List<SysTenantPackageVo> {
+        val lqw = buildQueryWrapper(param)
         return baseMapper.selectVoList(lqw)
     }
 
-    private fun buildQueryWrapper(bo: SysTenantPackageBo): KtQueryWrapper<SysTenantPackageEntity> {
+    private fun buildQueryWrapper(bo: SysTenantPackageQueryParam): KtQueryWrapper<SysTenantPackageEntity> {
         val lqw = KtQueryWrapper(SysTenantPackageEntity::class.java)
         lqw.like(StringUtils.isNotBlank(bo.packageName), SysTenantPackageEntity::packageName, bo.packageName)
         lqw.eq(StringUtils.isNotBlank(bo.status), SysTenantPackageEntity::status, bo.status)
@@ -69,13 +74,13 @@ class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper
      * 新增租户套餐
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun insertByBo(bo: SysTenantPackageBo): Boolean {
-        val add = MapstructUtils.convert(bo, SysTenantPackageEntity::class.java)
+    override fun insert(param: SysTenantPackageSaveParam): Boolean {
+        val add = MapstructUtils.convert(param, SysTenantPackageEntity::class.java)
         // 保存菜单id
-        add.menuIds = bo.menuIds.joinToString(", ")
+        add.menuIds = param.menuIds.joinToString(", ")
         val flag = baseMapper.insert(add) > 0
         if (flag) {
-            bo.packageId = add.packageId
+            param.packageId = add.packageId
         }
         return flag
     }
@@ -84,21 +89,21 @@ class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper
      * 修改租户套餐
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateByBo(bo: SysTenantPackageBo): Boolean {
-        val update = MapstructUtils.convert(bo, SysTenantPackageEntity::class.java)
+    override fun update(param: SysTenantPackageSaveParam): Boolean {
+        val update = MapstructUtils.convert(param, SysTenantPackageEntity::class.java)
         // 保存菜单id
-        update.menuIds = bo.menuIds.joinToString(", ")
+        update.menuIds = param.menuIds.joinToString(", ")
         return baseMapper.updateById(update) > 0
     }
 
     /**
      * 修改套餐状态
      *
-     * @param bo 套餐信息
+     * @param param 套餐信息
      * @return 结果
      */
-    override fun updatePackageStatus(bo: SysTenantPackageBo): Int {
-        val tenantPackage = convert(bo, SysTenantPackageEntity::class.java)
+    override fun updatePackageStatus(param: SysTenantPackageSaveParam): Int {
+        val tenantPackage = convert(param, SysTenantPackageEntity::class.java)
         return baseMapper.updateById(tenantPackage)
     }
 
@@ -108,7 +113,10 @@ class SysTenantPackageServiceImpl(private val baseMapper: SysTenantPackageMapper
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteWithValidByIds(ids: Collection<Long>, isValid: Boolean): Boolean {
         if (isValid) {
-            val exists = tenantMapper.exists(KtQueryWrapper(SysTenantEntity::class.java).`in`(SysTenantEntity::packageId, ids))
+            val exists = tenantMapper.exists(
+                KtQueryWrapper(SysTenantEntity::class.java)
+                    .`in`(SysTenantEntity::packageId, ids)
+            )
             if (exists) {
                 throw ServiceException("租户套餐已被使用")
             }

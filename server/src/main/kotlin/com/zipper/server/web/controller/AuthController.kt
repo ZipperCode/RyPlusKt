@@ -23,11 +23,10 @@ import com.zipper.framework.social.utils.SocialUtils.getAuthRequest
 import com.zipper.framework.social.utils.SocialUtils.loginAuth
 import com.zipper.framework.tanent.helper.TenantHelper
 import com.zipper.framework.websocket.utils.WebSocketUtils.sendMessage
-import com.zipper.modules.system.domain.bo.SysTenantBo
 import com.zipper.modules.system.service.client.ISysClientService
 import com.zipper.modules.system.service.config.ISysConfigService
 import com.zipper.modules.system.service.social.ISysSocialService
-import com.zipper.modules.system.service.tenant.ISysTenantService
+import com.zipper.modules.tenant.service.ISysTenantService
 import com.zipper.server.web.domain.vo.LoginTenantVo
 import com.zipper.server.web.domain.vo.LoginVo
 import com.zipper.server.web.domain.vo.TenantListVo
@@ -179,7 +178,7 @@ class AuthController(
     @GetMapping("/tenant/list")
     @Throws(Exception::class)
     fun tenantList(request: HttpServletRequest): R<LoginTenantVo> {
-        val tenantList = tenantService.queryList(SysTenantBo())
+        val tenantList = tenantService.queryList()
         val voList: List<TenantListVo> = MapstructUtils.convertWithClass(tenantList, TenantListVo::class.java)
         // 获取域名
         val host: String

@@ -89,19 +89,5 @@ class LibraryPlugin : Plugin<Project> {
         kapt(Libs.MapStruct.PlusProcessor)
     }
 
-    private fun DependencyHandlerScope.compileOnly(libs: String) = add("compileOnly", libs)
-    private fun DependencyHandlerScope.annotationProcessor(libs: String) = add("annotationProcessor", libs)
-    private fun DependencyHandlerScope.kapt(libs: String) = add("kapt", libs)
-    private fun DependencyHandlerScope.implementation(libs: String) = add("implementation", libs)
-    private fun DependencyHandler.`implementation`(
-        dependencyNotation: String,
-        dependencyConfiguration: Action<ExternalModuleDependency>
-    ): ExternalModuleDependency = addDependencyTo(
-        this, "implementation", dependencyNotation, dependencyConfiguration
-    )
 
-    private fun ExternalModuleDependency.exclude(group: String, module: String) {
-
-        exclude(mapOf("group" to group, "module" to module))
-    }
 }

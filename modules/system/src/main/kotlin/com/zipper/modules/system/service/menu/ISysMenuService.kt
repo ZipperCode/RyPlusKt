@@ -67,7 +67,7 @@ interface ISysMenuService {
      * @param packageId 租户套餐ID
      * @return 选中菜单列表
      */
-    fun selectMenuListByPackageId(packageId: Long?): List<Long>
+    fun selectMenuListByPackageId(packageId: Long): List<Long>
 
     /**
      * 构建前端路由所需要的菜单

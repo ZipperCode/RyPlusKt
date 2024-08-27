@@ -1,9 +1,10 @@
-package com.zipper.modules.system.service.tenant
+package com.zipper.modules.tenant.service
 
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
-import com.zipper.modules.system.domain.bo.SysTenantBo
-import com.zipper.modules.system.domain.vo.SysTenantVo
+import com.zipper.modules.tenant.domain.param.SysTenantQueryParam
+import com.zipper.modules.tenant.domain.param.SysTenantSaveParam
+import com.zipper.modules.tenant.domain.vo.SysTenantVo
 
 /**
  * 租户Service接口
@@ -24,27 +25,27 @@ interface ISysTenantService {
     /**
      * 查询租户列表
      */
-    fun queryPageList(bo: SysTenantBo, pageQuery: PageQuery): TableDataInfo<SysTenantVo>
+    fun queryPageList(param: SysTenantQueryParam, pageQuery: PageQuery): TableDataInfo<SysTenantVo>
 
     /**
      * 查询租户列表
      */
-    fun queryList(bo: SysTenantBo): List<SysTenantVo>
+    fun queryList(): List<SysTenantVo>
 
     /**
      * 新增租户
      */
-    fun insertByBo(bo: SysTenantBo): Boolean
+    fun insertByBo(param: SysTenantSaveParam): Boolean
 
     /**
      * 修改租户
      */
-    fun updateByBo(bo: SysTenantBo): Boolean
+    fun updateByBo(param: SysTenantSaveParam): Boolean
 
     /**
      * 修改租户状态
      */
-    fun updateTenantStatus(bo: SysTenantBo): Int
+    fun updateTenantStatus(param: SysTenantSaveParam): Int
 
     /**
      * 校验租户是否允许操作
@@ -59,7 +60,7 @@ interface ISysTenantService {
     /**
      * 校验企业名称是否唯一
      */
-    fun checkCompanyNameUnique(bo: SysTenantBo): Boolean
+    fun checkCompanyNameUnique(param: SysTenantSaveParam): Boolean
 
     /**
      * 校验账号余额
@@ -74,5 +75,5 @@ interface ISysTenantService {
     /**
      * 同步租户套餐
      */
-    fun syncTenantPackage(tenantId: String?, packageId: Long?): Boolean
+    fun syncTenantPackage(tenantId: String, packageId: Long?): Boolean
 }

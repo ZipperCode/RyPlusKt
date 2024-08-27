@@ -108,7 +108,7 @@ class SysMenuController(
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = ["/tenantPackageMenuTreeselect/{packageId}"])
-    fun tenantPackageMenuTreeselect(@PathVariable("packageId") packageId: Long?): R<MenuTreeSelectVo> {
+    fun tenantPackageMenuTreeselect(@PathVariable("packageId") packageId: Long): R<MenuTreeSelectVo> {
         val menus = menuService.selectMenuList(LoginHelper.getUserId())
         val selectVo = MenuTreeSelectVo()
         selectVo.checkedKeys = menuService.selectMenuListByPackageId(packageId)

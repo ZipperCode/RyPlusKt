@@ -6,5 +6,5 @@ plugins {
 
 dependencies {
     implementation(Libs.PowerJob.Worker)
-    annotationProcessor(Libs.PowerJob.OfficialProcessor)
+    kapt(Libs.PowerJob.OfficialProcessor)
 }

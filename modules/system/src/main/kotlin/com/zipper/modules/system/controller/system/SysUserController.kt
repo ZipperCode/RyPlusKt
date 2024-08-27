@@ -22,7 +22,6 @@ import com.zipper.modules.system.listener.SysUserImportListener
 import com.zipper.modules.system.service.dept.ISysDeptService
 import com.zipper.modules.system.service.post.ISysPostService
 import com.zipper.modules.system.service.role.ISysRoleService
-import com.zipper.modules.system.service.tenant.ISysTenantService
 import com.zipper.modules.system.service.user.ISysUserService
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.constraints.NotNull
@@ -32,7 +31,9 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import com.zipper.framework.core.constant.UserConstants
+import com.zipper.framework.core.modules.ITenantApi
 import com.zipper.framework.core.utils.MapstructUtils.convertWithClass
+import com.zipper.framework.core.utils.SpringUtilExt
 import org.zipper.framework.excel.utils.ExcelUtil.exportExcel
 import org.zipper.framework.excel.utils.ExcelUtil.importExcel
 
@@ -49,7 +50,6 @@ class SysUserController(
     private val roleService: ISysRoleService,
     private val postService: ISysPostService,
     private val deptService: ISysDeptService,
-    private val tenantService: ISysTenantService
 ) : BaseController() {
     /**
      * 获取用户列表
@@ -160,7 +160,7 @@ class SysUserController(
             return R.fail("新增用户'" + user.userName + "'失败，邮箱账号已存在")
         }
         if (TenantHelper.isEnable()) {
-            if (!tenantService.checkAccountBalance(TenantHelper.tenantId)) {
+            if (!userService.checkAccountBalance(TenantHelper.tenantId)) {
                 return R.fail("当前租户下用户名额不足，请联系管理员")
             }
         }

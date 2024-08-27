@@ -3,7 +3,7 @@ package com.zipper.framework.mybatis.core.domain
 import java.io.Serializable
 import java.time.LocalDateTime
 
-interface UpdaterMixin : Serializable {
+interface UpdaterMixin : IMixin {
     /**
      * 创建者
      */

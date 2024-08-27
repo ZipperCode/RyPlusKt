@@ -1,20 +1,18 @@
 package com.zipper.modules.storage.domain.entity
 
-import com.baomidou.mybatisplus.annotation.IdType
-import com.baomidou.mybatisplus.annotation.TableField
-import com.baomidou.mybatisplus.annotation.TableId
-import com.baomidou.mybatisplus.annotation.TableName
+import com.baomidou.mybatisplus.annotation.*
 import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler
 import com.zipper.framework.json.utils.JsonUtils
 import com.zipper.framework.json.utils.JsonUtils.createReference
-import com.zipper.framework.mybatis.core.domain.BaseEntity2
+import com.zipper.framework.mybatis.core.domain.BaseMixinEntity
+import com.zipper.framework.mybatis.core.domain.LogicDeleteMixin
 import com.zipper.modules.storage.client.FileClientConfig
 import com.zipper.modules.storage.client.db.DataBaseFileClientConfig
 import com.zipper.modules.storage.client.local.LocalFileClientConfig
 import com.zipper.modules.storage.client.s3.S3FileClientConfig
 
 @TableName("sys_file_config", autoResultMap = true)
-class SysFileConfigEntity : BaseEntity2() {
+class SysFileConfigEntity : BaseMixinEntity(), LogicDeleteMixin {
     /**
      * 配置编号，数据库自增
      */
@@ -51,6 +49,9 @@ class SysFileConfigEntity : BaseEntity2() {
 
     @TableField(typeHandler = FileClientConfigTypeHandler::class)
     lateinit var config: FileClientConfig
+
+    @field:TableLogic
+    override var deleted: Int = LogicDeleteMixin.NORMAL
 
     class FileClientConfigTypeHandler : AbstractJsonTypeHandler<FileClientConfig>() {
         override fun parse(json: String): FileClientConfig {

@@ -1,9 +1,8 @@
-package com.zipper.modules.system.mapper
+package com.zipper.modules.tenant.mapper
 
-import com.zipper.framework.mybatis.core.mapper.BaseMapperPlus
 import com.zipper.framework.mybatis.core.mapper.BaseMapperPlusVo
-import com.zipper.modules.system.domain.entity.SysTenantEntity
-import com.zipper.modules.system.domain.vo.SysTenantVo
+import com.zipper.modules.tenant.domain.entity.SysTenantEntity
+import com.zipper.modules.tenant.domain.vo.SysTenantVo
 import org.apache.ibatis.annotations.Mapper
 
 

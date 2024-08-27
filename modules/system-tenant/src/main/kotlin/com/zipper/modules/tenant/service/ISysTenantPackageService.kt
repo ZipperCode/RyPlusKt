@@ -1,9 +1,10 @@
-package com.zipper.modules.system.service.tenant
+package com.zipper.modules.tenant.service
 
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
-import com.zipper.modules.system.domain.bo.SysTenantPackageBo
-import com.zipper.modules.system.domain.vo.SysTenantPackageVo
+import com.zipper.modules.tenant.domain.param.SysTenantPackageQueryParam
+import com.zipper.modules.tenant.domain.param.SysTenantPackageSaveParam
+import com.zipper.modules.tenant.domain.vo.SysTenantPackageVo
 
 
 /**
@@ -20,7 +21,7 @@ interface ISysTenantPackageService {
     /**
      * 查询租户套餐列表
      */
-    fun queryPageList(bo: SysTenantPackageBo, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo>
+    fun queryPageList(param: SysTenantPackageQueryParam, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo>
 
     /**
      * 查询租户套餐已启用列表
@@ -30,22 +31,22 @@ interface ISysTenantPackageService {
     /**
      * 查询租户套餐列表
      */
-    fun queryList(bo: SysTenantPackageBo): List<SysTenantPackageVo>
+    fun queryList(param: SysTenantPackageQueryParam): List<SysTenantPackageVo>
 
     /**
      * 新增租户套餐
      */
-    fun insertByBo(bo: SysTenantPackageBo): Boolean
+    fun insert(param: SysTenantPackageSaveParam): Boolean
 
     /**
      * 修改租户套餐
      */
-    fun updateByBo(bo: SysTenantPackageBo): Boolean
+    fun update(param: SysTenantPackageSaveParam): Boolean
 
     /**
      * 修改套餐状态
      */
-    fun updatePackageStatus(bo: SysTenantPackageBo): Int
+    fun updatePackageStatus(param: SysTenantPackageSaveParam): Int
 
     /**
      * 校验并批量删除租户套餐信息

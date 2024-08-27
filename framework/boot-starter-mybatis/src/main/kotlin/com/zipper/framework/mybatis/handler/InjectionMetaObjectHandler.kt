@@ -4,15 +4,14 @@ import cn.hutool.core.util.ObjectUtil
 import cn.hutool.http.HttpStatus
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler
 import com.zipper.framework.core.domain.model.LoginUser
-import com.zipper.framework.mybatis.core.domain.BaseEntity
-import com.zipper.framework.satoken.utils.LoginHelper
-import org.apache.ibatis.reflection.MetaObject
 import com.zipper.framework.core.exception.ServiceException
 import com.zipper.framework.core.ext.log
 import com.zipper.framework.core.utils.ktext.withType
-import com.zipper.framework.mybatis.core.domain.BaseEntity2
+import com.zipper.framework.mybatis.core.domain.BaseEntity
 import com.zipper.framework.mybatis.core.domain.CreatorMixin
 import com.zipper.framework.mybatis.core.domain.UpdaterMixin
+import com.zipper.framework.satoken.utils.LoginHelper
+import org.apache.ibatis.reflection.MetaObject
 import java.time.LocalDateTime
 import java.util.*
 
@@ -72,10 +71,9 @@ class InjectionMetaObjectHandler : MetaObjectHandler {
                 }
             }
 
-            metaObject.originalObject.withType<BaseEntity2> {
-                updateTime = LocalDateTime.now()
-                val loginUser = getLoginUser() ?: return
-                updateBy = loginUser.username
+            metaObject.originalObject.withType<UpdaterMixin> {
+                updateTime = updateTime ?: LocalDateTime.now()
+                updateBy = updateBy ?: getLoginUser()?.username
             }
 
         } catch (e: Exception) {

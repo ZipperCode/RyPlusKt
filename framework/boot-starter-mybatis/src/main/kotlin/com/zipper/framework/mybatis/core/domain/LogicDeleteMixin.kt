@@ -1,6 +1,6 @@
 package com.zipper.framework.mybatis.core.domain
 
-interface LogicDeleteMixin {
+interface LogicDeleteMixin : IMixin {
 
     @set:DeleteStatus
     var deleted: Int

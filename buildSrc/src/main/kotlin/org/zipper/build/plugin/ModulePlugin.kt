@@ -35,21 +35,15 @@ class ModulePlugin : Plugin<Project> {
 
 
 
-            allOpen{
-                annotations(listOf(
-                    "com.zipper.framework.core.annotation.NoArgs",
-                    "lombok.Data"
-                ))
+            allOpen {
+                annotations(
+                    listOf(
+                        "com.zipper.framework.core.annotation.NoArgs",
+                        "lombok.Data"
+                    )
+                )
             }
         }
     }
-
-    private fun DependencyHandlerScope.compileOnly(libs: String) = add("compileOnly", libs)
-    private fun DependencyHandlerScope.annotationProcessor(libs: String) = add("annotationProcessor", libs)
-    private fun DependencyHandlerScope.implementation(libs: String) = add("implementation", libs)
-
-    fun org.gradle.api.Project.`allOpen`(configure: Action<org.jetbrains.kotlin.allopen.gradle.AllOpenExtension>): Unit =
-        (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("allOpen", configure)
-
 
 }

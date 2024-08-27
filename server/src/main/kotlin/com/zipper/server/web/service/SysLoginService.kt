@@ -30,7 +30,7 @@ import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.modules.system.mapper.SysUserMapper
 import com.zipper.modules.system.service.permission.ISysPermissionService
 import com.zipper.modules.system.service.social.ISysSocialService
-import com.zipper.modules.system.service.tenant.ISysTenantService
+import com.zipper.modules.tenant.service.ISysTenantService
 import me.zhyd.oauth.model.AuthUser
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Value

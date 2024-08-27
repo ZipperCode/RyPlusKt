@@ -2,6 +2,7 @@ package com.zipper.framework.core.utils
 
 import cn.hutool.extra.spring.SpringUtil
 import org.springframework.aop.framework.AopContext
+import org.springframework.beans.BeansException
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.getBean
 import org.springframework.context.ApplicationContext
@@ -65,6 +66,14 @@ object SpringUtilExt : SpringUtil() {
     @JvmStatic
     fun context(): ApplicationContext {
         return getApplicationContext()
+    }
+
+    inline fun <reified T> getBeanByNameOrNull(name: String): T? {
+        return try {
+            getBeanFactory().getBean(name) as T
+        } catch (e: BeansException) {
+            null
+        }
     }
 
     inline fun <reified T> getBeanByName(name: String): T {

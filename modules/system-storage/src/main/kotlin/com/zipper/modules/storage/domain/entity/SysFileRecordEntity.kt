@@ -2,12 +2,9 @@ package com.zipper.modules.storage.domain.entity
 
 import com.baomidou.mybatisplus.annotation.*
 import com.zipper.framework.core.annotation.NoArgs
-import com.zipper.framework.mybatis.core.domain.BaseEntity
-import com.zipper.framework.mybatis.core.domain.BaseEntity2
 import com.zipper.framework.mybatis.core.domain.CreatorMixin
 import com.zipper.modules.storage.domain.mixin.FileRecordMixin
 import lombok.Data
-import lombok.EqualsAndHashCode
 import java.time.LocalDateTime
 
 /**

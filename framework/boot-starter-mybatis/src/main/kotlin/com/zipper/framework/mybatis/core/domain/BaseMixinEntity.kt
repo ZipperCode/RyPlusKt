@@ -3,10 +3,12 @@ package com.zipper.framework.mybatis.core.domain
 import com.baomidou.mybatisplus.annotation.FieldFill
 import com.baomidou.mybatisplus.annotation.TableField
 import com.baomidou.mybatisplus.annotation.TableLogic
+import lombok.EqualsAndHashCode
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
-
-abstract class BaseEntity2 : CreatorMixin, UpdaterMixin, LogicDeleteMixin {
+@EqualsAndHashCode
+abstract class BaseMixinEntity : CreatorMixin, UpdaterMixin, Serializable {
     /**
      * 创建者
      */
@@ -30,10 +32,4 @@ abstract class BaseEntity2 : CreatorMixin, UpdaterMixin, LogicDeleteMixin {
      */
     @field:TableField(fill = FieldFill.INSERT_UPDATE)
     override var updateTime: LocalDateTime? = null
-
-    /**
-     * 逻辑删除
-     */
-    @field:TableLogic
-    override var deleted: Int = LogicDeleteMixin.NORMAL
 }

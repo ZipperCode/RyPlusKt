@@ -16,12 +16,13 @@ import com.zipper.modules.system.domain.vo.SysMenuVo
 import com.zipper.modules.system.mapper.SysMenuMapper
 import com.zipper.modules.system.mapper.SysRoleMapper
 import com.zipper.modules.system.mapper.SysRoleMenuMapper
-import com.zipper.modules.system.mapper.SysTenantPackageMapper
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 import com.zipper.framework.core.constant.UserConstants
+import com.zipper.framework.core.modules.ITenantApi
 import com.zipper.framework.core.utils.MapstructUtils.convert
 import com.zipper.framework.core.utils.MapstructUtils.convertWithClass
+import com.zipper.framework.core.utils.SpringUtilExt
 import com.zipper.framework.core.utils.StringUtilsExt
 import com.zipper.framework.core.utils.TreeBuildUtils
 import java.util.*
@@ -36,8 +37,7 @@ import java.util.function.Function
 class SysMenuServiceImpl(
     private val baseMapper: SysMenuMapper,
     private val roleMapper: SysRoleMapper,
-    private val roleMenuMapper: SysRoleMenuMapper,
-    private val tenantPackageMapper: SysTenantPackageMapper
+    private val roleMenuMapper: SysRoleMenuMapper
 ) : ISysMenuService {
     /**
      * 根据用户查询系统菜单列表
@@ -152,14 +152,11 @@ class SysMenuServiceImpl(
      * @param packageId 租户套餐ID
      * @return 选中菜单列表
      */
-    override fun selectMenuListByPackageId(packageId: Long?): List<Long> {
-        val tenantPackage = tenantPackageMapper.selectById(packageId)
-        val menuIds: List<Long?> = StringUtilsExt.splitTo(tenantPackage.menuIds, Convert::toLong)
-        if (CollUtil.isEmpty(menuIds)) {
-            return listOf()
-        }
+    override fun selectMenuListByPackageId(packageId: Long): List<Long> {
+        val api = SpringUtilExt.getBeanByNameOrNull<ITenantApi>(ITenantApi.IMPL)
+        val (menuCheckStrictly, menuIds ) = api?.getPackageMenuIds(packageId) ?:return emptyList()
         var parentIds: List<Long?>? = null
-        if (tenantPackage.menuCheckStrictly!!) {
+        if (menuCheckStrictly) {
             parentIds = baseMapper.selectObjs(MybatisKt.ktQuery<SysMenuEntity>()
                 .select(SysMenuEntity::parentId)
                 .`in`(SysMenuEntity::menuId, menuIds), Function { x: Any? -> Convert.toLong(x) })

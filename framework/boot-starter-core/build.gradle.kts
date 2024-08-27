@@ -24,7 +24,7 @@ dependencies {
     implementation(Libs.Ip2region.Core)
 
     implementation(Libs.MapStruct.PlusStarter)
-    annotationProcessor(Libs.MapStruct.PlusProcessor)
+    kapt(Libs.MapStruct.PlusProcessor)
 
     api(Libs.Google.Guava)
 }

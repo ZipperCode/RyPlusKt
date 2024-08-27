@@ -27,10 +27,12 @@ import org.springframework.transaction.annotation.Transactional
 import com.zipper.framework.core.constant.CacheNames
 import com.zipper.framework.core.constant.UserConstants
 import com.zipper.framework.core.exception.ServiceException
+import com.zipper.framework.core.modules.ITenantApi
 import com.zipper.framework.core.service.UserService
 import com.zipper.framework.core.utils.MapstructUtils
 import com.zipper.framework.core.utils.StreamUtils
 import com.zipper.framework.core.utils.StringUtilsExt
+import com.zipper.framework.tanent.helper.TenantHelper
 
 /**
  * 用户 业务层处理
@@ -535,6 +537,16 @@ class SysUserServiceImpl(
         return if (ObjectUtil.isNull(sysUserEntity)) null else sysUserEntity.nickName
     }
 
-
+    override fun checkAccountBalance(tenantId: String?): Boolean {
+        if (tenantId.isNullOrEmpty()) {
+            return true
+        }
+        return ITenantApi.getImpl()?.checkAccountBalance(tenantId) {
+            baseMapper.selectCount(
+                MybatisKt.ktQuery<SysUserEntity>()
+                    .eq(SysUserEntity::tenantId, tenantId)
+            )
+        } ?: false
+    }
 
 }

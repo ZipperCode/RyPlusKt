@@ -205,4 +205,9 @@ interface ISysUserService {
      * @return
      */
     fun selectUserListByDept(deptId: Long?): List<SysUserVo>
+
+    /**
+     * 检查租户内余额
+     */
+    fun checkAccountBalance(tenantId: String?): Boolean
 }

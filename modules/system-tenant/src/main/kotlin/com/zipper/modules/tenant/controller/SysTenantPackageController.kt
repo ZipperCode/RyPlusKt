@@ -1,4 +1,4 @@
-package com.zipper.modules.system.controller.system
+package com.zipper.modules.tenant.controller
 
 import cn.dev33.satoken.annotation.SaCheckPermission
 import cn.dev33.satoken.annotation.SaCheckRole
@@ -9,9 +9,6 @@ import com.zipper.framework.log.enums.BusinessType
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
 import com.zipper.framework.web.core.BaseController
-import com.zipper.modules.system.domain.bo.SysTenantPackageBo
-import com.zipper.modules.system.domain.vo.SysTenantPackageVo
-import com.zipper.modules.system.service.tenant.ISysTenantPackageService
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.constraints.NotNull
 import org.springframework.validation.annotation.Validated
@@ -19,6 +16,10 @@ import org.springframework.web.bind.annotation.*
 import com.zipper.framework.core.constant.TenantConstants
 import com.zipper.framework.core.validate.AddGroup
 import com.zipper.framework.core.validate.EditGroup
+import com.zipper.modules.tenant.domain.param.SysTenantPackageQueryParam
+import com.zipper.modules.tenant.domain.param.SysTenantPackageSaveParam
+import com.zipper.modules.tenant.domain.vo.SysTenantPackageVo
+import com.zipper.modules.tenant.service.ISysTenantPackageService
 import org.zipper.framework.excel.utils.ExcelUtil.exportExcel
 
 /**
@@ -29,15 +30,17 @@ import org.zipper.framework.excel.utils.ExcelUtil.exportExcel
 @Validated
 @RestController
 @RequestMapping("/system/tenant/package")
-class SysTenantPackageController(private val tenantPackageService: ISysTenantPackageService) : BaseController() {
+class SysTenantPackageController(
+    private val tenantPackageService: ISysTenantPackageService
+) : BaseController() {
     /**
      * 查询租户套餐列表
      */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenantPackage:list")
     @GetMapping("/list")
-    fun list(bo: SysTenantPackageBo, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo> {
-        return tenantPackageService.queryPageList(bo, pageQuery)
+    fun list(param: SysTenantPackageQueryParam, pageQuery: PageQuery): TableDataInfo<SysTenantPackageVo> {
+        return tenantPackageService.queryPageList(param, pageQuery)
     }
 
     /**
@@ -57,7 +60,7 @@ class SysTenantPackageController(private val tenantPackageService: ISysTenantPac
     @SaCheckPermission("system:tenantPackage:export")
     @Log(title = "租户套餐", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    fun export(bo: SysTenantPackageBo, response: HttpServletResponse) {
+    fun export(bo: SysTenantPackageQueryParam, response: HttpServletResponse) {
         val list = tenantPackageService.queryList(bo)
         exportExcel(list, "租户套餐", SysTenantPackageVo::class.java, response)
     }
@@ -85,9 +88,9 @@ class SysTenantPackageController(private val tenantPackageService: ISysTenantPac
     fun add(
         @Validated(
             AddGroup::class
-        ) @RequestBody bo: SysTenantPackageBo
+        ) @RequestBody bo: SysTenantPackageSaveParam
     ): R<Void> {
-        return toAjax(tenantPackageService.insertByBo(bo))
+        return toAjax(tenantPackageService.insert(bo))
     }
 
     /**
@@ -99,9 +102,9 @@ class SysTenantPackageController(private val tenantPackageService: ISysTenantPac
     @RepeatSubmit
     @PutMapping
     fun edit(
-        @Validated(EditGroup::class) @RequestBody bo: SysTenantPackageBo
+        @Validated(EditGroup::class) @RequestBody param: SysTenantPackageSaveParam
     ): R<Void> {
-        return toAjax(tenantPackageService.updateByBo(bo))
+        return toAjax(tenantPackageService.update(param))
     }
 
     /**
@@ -111,8 +114,8 @@ class SysTenantPackageController(private val tenantPackageService: ISysTenantPac
     @SaCheckPermission("system:tenantPackage:edit")
     @Log(title = "租户套餐", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    fun changeStatus(@RequestBody bo: SysTenantPackageBo): R<Void> {
-        return toAjax(tenantPackageService.updatePackageStatus(bo))
+    fun changeStatus(@RequestBody param: SysTenantPackageSaveParam): R<Void> {
+        return toAjax(tenantPackageService.updatePackageStatus(param))
     }
 
     /**

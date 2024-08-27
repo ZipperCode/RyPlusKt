@@ -1,6 +1,6 @@
 package com.zipper.server.web.domain.vo
 
-import com.zipper.modules.system.domain.vo.SysTenantVo
+import com.zipper.modules.tenant.domain.vo.SysTenantVo
 import io.github.linpeilie.annotations.AutoMapper
 
 /**

@@ -45,5 +45,11 @@ inline fun <reified T: Any> KtQueryWrapper<T>.likeIfPresent(property: KProperty1
     return this
 }
 
+inline fun <reified T: Any> KtQueryWrapper<T>.eqIfPresent(property: KProperty1<T, *>, value: Any?): KtQueryWrapper<T> {
+    if (value != null) {
+        return eq(property, value)
+    }
+    return this
+}
 
 
