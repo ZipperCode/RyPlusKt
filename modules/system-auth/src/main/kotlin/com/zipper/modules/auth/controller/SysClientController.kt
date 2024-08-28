@@ -1,4 +1,4 @@
-package com.zipper.modules.system.controller.system
+package com.zipper.modules.auth.controller
 
 import cn.dev33.satoken.annotation.SaCheckPermission
 import com.zipper.framework.core.domain.R
@@ -8,15 +8,16 @@ import com.zipper.framework.log.enums.BusinessType
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
 import com.zipper.framework.web.core.BaseController
-import com.zipper.modules.system.domain.bo.SysClientBo
-import com.zipper.modules.system.domain.vo.SysClientVo
-import com.zipper.modules.system.service.client.ISysClientService
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.constraints.NotNull
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import com.zipper.framework.core.validate.AddGroup
 import com.zipper.framework.core.validate.EditGroup
+import com.zipper.modules.auth.domain.param.SysClientQueryParam
+import com.zipper.modules.auth.domain.param.SysClientSaveParam
+import com.zipper.modules.auth.domain.vo.SysClientVo
+import com.zipper.modules.auth.service.ISysClientService
 import org.zipper.framework.excel.utils.ExcelUtil
 
 /**
@@ -28,14 +29,16 @@ import org.zipper.framework.excel.utils.ExcelUtil
 @Validated
 @RestController
 @RequestMapping("/system/client")
-class SysClientController(private val sysClientService: ISysClientService) : BaseController() {
+class SysClientController(
+    private val sysClientService: ISysClientService
+) : BaseController() {
     /**
      * 查询客户端管理列表
      */
     @SaCheckPermission("system:client:list")
     @GetMapping("/list")
-    fun list(bo: SysClientBo?, pageQuery: PageQuery?): TableDataInfo<SysClientVo> {
-        return sysClientService.queryPageList(bo!!, pageQuery!!)
+    fun list(param: SysClientQueryParam, pageQuery: PageQuery?): TableDataInfo<SysClientVo> {
+        return sysClientService.queryPageList(param, pageQuery!!)
     }
 
     /**
@@ -44,8 +47,8 @@ class SysClientController(private val sysClientService: ISysClientService) : Bas
     @SaCheckPermission("system:client:export")
     @Log(title = "客户端管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    fun export(bo: SysClientBo, response: HttpServletResponse) {
-        val list = sysClientService.queryList(bo)
+    fun export(response: HttpServletResponse) {
+        val list = sysClientService.queryList()
         ExcelUtil.exportExcel(list, "客户端管理", SysClientVo::class.java, response)
     }
 
@@ -67,8 +70,8 @@ class SysClientController(private val sysClientService: ISysClientService) : Bas
     @Log(title = "客户端管理", businessType = BusinessType.INSERT)
     @RepeatSubmit
     @PostMapping
-    fun add(@Validated(AddGroup::class) @RequestBody bo: SysClientBo): R<Void> {
-        return toAjax(sysClientService.insertByBo(bo))
+    fun add(@Validated(AddGroup::class) @RequestBody param: SysClientSaveParam): R<Void> {
+        return toAjax(sysClientService.insert(param))
     }
 
     /**
@@ -78,8 +81,8 @@ class SysClientController(private val sysClientService: ISysClientService) : Bas
     @Log(title = "客户端管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit
     @PutMapping
-    fun edit(@Validated(EditGroup::class) @RequestBody bo: SysClientBo): R<Void> {
-        return toAjax(sysClientService.updateByBo(bo))
+    fun edit(@Validated(EditGroup::class) @RequestBody param: SysClientSaveParam): R<Void> {
+        return toAjax(sysClientService.update(param))
     }
 
     /**
@@ -88,7 +91,7 @@ class SysClientController(private val sysClientService: ISysClientService) : Bas
     @SaCheckPermission("system:client:edit")
     @Log(title = "客户端管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    fun changeStatus(@RequestBody bo: SysClientBo): R<Void> {
+    fun changeStatus(@RequestBody bo: SysClientSaveParam): R<Void> {
         return toAjax(sysClientService.updateUserStatus(bo.id!!, bo.status!!))
     }
 

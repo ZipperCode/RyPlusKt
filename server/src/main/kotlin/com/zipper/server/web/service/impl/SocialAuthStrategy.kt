@@ -20,12 +20,13 @@ import com.zipper.framework.satoken.utils.LoginHelper.login
 import com.zipper.framework.social.config.properties.SocialProperties
 import com.zipper.framework.social.utils.SocialUtils.loginAuth
 import com.zipper.framework.tanent.helper.TenantHelper
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.vo.SysSocialVo
+import com.zipper.modules.auth.service.ISysSocialService
 import com.zipper.modules.system.domain.entity.SysUserEntity
-import com.zipper.modules.system.domain.vo.SysSocialVo
+
 import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.modules.system.mapper.SysUserMapper
-import com.zipper.modules.system.service.social.ISysSocialService
 import com.zipper.server.web.domain.vo.LoginVo
 import com.zipper.server.web.service.IAuthStrategy
 import com.zipper.server.web.service.SysLoginService
@@ -50,7 +51,7 @@ class SocialAuthStrategy(
      * @param client   客户端信息
      */
     override fun login(body: String, client: SysClientEntity): LoginVo {
-        val loginBody = parseObject(body, SocialLoginBody::class.java)!!
+        val loginBody = parseObject(body, SocialLoginBody::class.java)
         validate(loginBody)
         val response = loginAuth(
             loginBody.source, loginBody.socialCode,
@@ -70,11 +71,11 @@ class SocialAuthStrategy(
                 .executeAsync()
         }
 
-        val list: List<SysSocialVo?> = sysSocialService.selectByAuthId(authUserData.source + authUserData.uuid)
+        val list: List<SysSocialVo> = sysSocialService.selectByAuthId(authUserData.source + authUserData.uuid)
         if (CollUtil.isEmpty(list)) {
             throw ServiceException("你还没有绑定第三方账号，绑定后才可以登录！")
         }
-        val social = list.firstOrNull{ it?.tenantId == loginBody.tenantId} ?: throw ServiceException("对不起，你没有权限登录当前租户！")
+        val social = list.firstOrNull { it?.tenantId == loginBody.tenantId } ?: throw ServiceException("对不起，你没有权限登录当前租户！")
         // 查找用户
         val user = loadUser(social.tenantId!!, social.userId)
 

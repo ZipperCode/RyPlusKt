@@ -5,6 +5,8 @@ import cn.dev33.satoken.stp.StpUtil
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.core.collection.CollUtil
 import cn.hutool.core.util.ObjectUtil
+import cn.hutool.extra.servlet.JakartaServletUtil
+import cn.hutool.http.useragent.UserAgentUtil
 import com.zipper.framework.core.constant.Constants
 import com.zipper.framework.core.constant.GlobalConstants
 import com.zipper.framework.core.constant.TenantConstants
@@ -24,13 +26,16 @@ import com.zipper.framework.redis.utils.RedisUtils
 import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.tanent.exception.TenantException
 import com.zipper.framework.tanent.helper.TenantHelper
-import com.zipper.modules.system.domain.bo.SysSocialBo
+import com.zipper.modules.auth.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.param.SysSocialSaveParam
+import com.zipper.modules.auth.service.ISysClientService
+import com.zipper.modules.auth.service.ISysSocialService
 import com.zipper.modules.system.domain.entity.SysUserEntity
 import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.modules.system.mapper.SysUserMapper
 import com.zipper.modules.system.service.permission.ISysPermissionService
-import com.zipper.modules.system.service.social.ISysSocialService
 import com.zipper.modules.tenant.service.ISysTenantService
+import com.zipper.server.web.helper.LoginLogEventHelper
 import me.zhyd.oauth.model.AuthUser
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Value
@@ -46,7 +51,6 @@ import java.util.function.Supplier
  */
 @Service
 class SysLoginService(
-    private val tenantService: ISysTenantService,
     private val permissionService: ISysPermissionService,
     private val sysSocialService: ISysSocialService,
     private val userMapper: SysUserMapper
@@ -67,22 +71,22 @@ class SysLoginService(
     fun socialRegister(authUserData: AuthUser) {
         val authId = authUserData.source + authUserData.uuid
         // 第三方用户信息
-        val bo = BeanUtil.toBean(authUserData, SysSocialBo::class.java)
-        BeanUtil.copyProperties(authUserData.token, bo)
-        bo.userId = LoginHelper.getUserId()
-        bo.authId = authId
-        bo.openId = authUserData.uuid
-        bo.userName = authUserData.username
-        bo.nickName = authUserData.nickname
+        val param = BeanUtil.toBean(authUserData, SysSocialSaveParam::class.java)
+        BeanUtil.copyProperties(authUserData.token, param)
+        param.userId = LoginHelper.getUserId()
+        param.authId = authId
+        param.openId = authUserData.uuid
+        param.userName = authUserData.username
+        param.nickName = authUserData.nickname
         // 查询是否已经绑定用户
         val list = sysSocialService.selectByAuthId(authId)
         if (CollUtil.isEmpty(list)) {
             // 没有绑定用户, 新增用户信息
-            sysSocialService.insertByBo(bo)
+            sysSocialService.insert(param)
         } else {
             // 更新用户信息
-            bo.id = list[0].id
-            sysSocialService.updateByBo(bo)
+            param.id = list[0].id
+            sysSocialService.update(param)
         }
     }
 
@@ -119,15 +123,7 @@ class SysLoginService(
      * @param message  消息内容
      */
     fun recordLogininfor(tenantId: String?, username: String?, status: String?, message: String?) {
-        SpringUtilExt.context().publishEvent(
-            LoginLogEvent(
-                tenantId = tenantId,
-                username = username,
-                status = status,
-                message = message,
-                request = ServletUtils.getRequest()
-            )
-        )
+        LoginLogEventHelper.postRecord(tenantId, username, status, message)
     }
 
 
@@ -213,6 +209,9 @@ class SysLoginService(
         if (StringUtils.isBlank(tenantId)) {
             throw TenantException("tenant.number.not.blank")
         }
+
+        val tenantService = SpringUtilExt.getBeanByTypeOrNull(ISysTenantService::class.java) ?: return
+
         val tenant = tenantService.queryByTenantId(tenantId)
         if (ObjectUtil.isNull(tenant)) {
             log.info("登录租户：{} 不存在.", tenantId)

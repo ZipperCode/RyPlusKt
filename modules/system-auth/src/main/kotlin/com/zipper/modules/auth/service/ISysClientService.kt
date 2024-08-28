@@ -1,10 +1,11 @@
-package com.zipper.modules.system.service.client
+package com.zipper.modules.auth.service
 
 import com.zipper.framework.mybatis.core.page.PageQuery
 import com.zipper.framework.mybatis.core.page.TableDataInfo
-import com.zipper.modules.system.domain.bo.SysClientBo
-import com.zipper.modules.system.domain.entity.SysClientEntity
-import com.zipper.modules.system.domain.vo.SysClientVo
+import com.zipper.modules.auth.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.param.SysClientQueryParam
+import com.zipper.modules.auth.domain.param.SysClientSaveParam
+import com.zipper.modules.auth.domain.vo.SysClientVo
 
 /**
  * 客户端管理Service接口
@@ -26,22 +27,22 @@ interface ISysClientService {
     /**
      * 查询客户端管理列表
      */
-    fun queryPageList(bo: SysClientBo, pageQuery: PageQuery): TableDataInfo<SysClientVo>
+    fun queryPageList(param: SysClientQueryParam, pageQuery: PageQuery): TableDataInfo<SysClientVo>
 
     /**
      * 查询客户端管理列表
      */
-    fun queryList(bo: SysClientBo): List<SysClientVo>
+    fun queryList(): List<SysClientVo>
 
     /**
      * 新增客户端管理
      */
-    fun insertByBo(bo: SysClientBo): Boolean
+    fun insert(param: SysClientSaveParam): Boolean
 
     /**
      * 修改客户端管理
      */
-    fun updateByBo(bo: SysClientBo): Boolean
+    fun update(param: SysClientSaveParam): Boolean
 
     /**
      * 修改状态

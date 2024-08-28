@@ -1,28 +1,22 @@
 package com.zipper.modules.system.service.log
 
-import cn.hutool.core.util.ObjectUtil
-import cn.hutool.extra.servlet.JakartaServletUtil
-import cn.hutool.http.useragent.UserAgentUtil
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
-import com.zipper.framework.log.event.LoginLogEvent
-import com.zipper.framework.mybatis.core.page.PageQuery
-import com.zipper.framework.mybatis.core.page.TableDataInfo
-import com.zipper.framework.satoken.utils.LoginHelper
-import com.zipper.modules.system.domain.bo.SysLoginLogBo
-import com.zipper.modules.system.domain.entity.SysClientEntity
-import com.zipper.modules.system.domain.entity.SysLoginLogEntity
-import com.zipper.modules.system.domain.vo.SysLoginLogVo
-import com.zipper.modules.system.mapper.SysLoginLogMapper
-import com.zipper.modules.system.service.client.ISysClientService
-import org.apache.commons.lang3.StringUtils
-import org.springframework.context.event.EventListener
-import org.springframework.scheduling.annotation.Async
-import org.springframework.stereotype.Service
 import com.zipper.framework.core.constant.Constants
 import com.zipper.framework.core.ext.log
 import com.zipper.framework.core.utils.MapstructUtils.convert
 import com.zipper.framework.core.utils.ip.AddressUtils
+import com.zipper.framework.log.event.LoginLogEvent
+import com.zipper.framework.mybatis.core.page.PageQuery
+import com.zipper.framework.mybatis.core.page.TableDataInfo
+import com.zipper.modules.system.domain.bo.SysLoginLogBo
+import com.zipper.modules.system.domain.entity.SysLoginLogEntity
+import com.zipper.modules.system.domain.vo.SysLoginLogVo
+import com.zipper.modules.system.mapper.SysLoginLogMapper
+import org.apache.commons.lang3.StringUtils
+import org.springframework.context.event.EventListener
+import org.springframework.scheduling.annotation.Async
+import org.springframework.stereotype.Service
 import java.util.*
 
 /**
@@ -33,7 +27,6 @@ import java.util.*
 @Service
 class SysLoginLogServiceImpl(
     private val baseMapper: SysLoginLogMapper,
-    private val clientService: ISysClientService
 ) :
     ISysLoginLogService {
     /**
@@ -44,19 +37,9 @@ class SysLoginLogServiceImpl(
     @Async
     @EventListener
     fun recordLoginLog(loginLogEvent: LoginLogEvent) {
-        val request = loginLogEvent.request ?: return
-        val userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"))
-        val ip = JakartaServletUtil.getClientIP(request)
-        // 客户端信息
-        val clientid = request.getHeader(LoginHelper.CLIENT_KEY)
-        var client: SysClientEntity? = null
-        if (StringUtils.isNotBlank(clientid)) {
-            client = clientService.queryByClientId(clientid)
-        }
-
-        val address: String = AddressUtils.getRealAddressByIP(ip)
+        val address: String = AddressUtils.getRealAddressByIP(loginLogEvent.ip)
         val s = StringBuilder()
-        s.append(getBlock(ip))
+        s.append(getBlock(loginLogEvent.ip))
         s.append(address)
         s.append(getBlock(loginLogEvent.username))
         s.append(getBlock(loginLogEvent.status))
@@ -64,30 +47,28 @@ class SysLoginLogServiceImpl(
         // 打印信息到日志
         log.info(s.toString(), loginLogEvent.args)
         // 获取客户端操作系统
-        val os = userAgent.os.name
+        val os = loginLogEvent.userAgent.os.name
         // 获取客户端浏览器
-        val browser = userAgent.browser.name
+        val browser = loginLogEvent.userAgent.browser.name
         // 封装对象
-        val LoginLog = SysLoginLogBo()
-        LoginLog.tenantId = loginLogEvent.tenantId
-        LoginLog.userName = loginLogEvent.username
-        if (ObjectUtil.isNotNull(client)) {
-            LoginLog.clientKey = client!!.clientKey
-            LoginLog.deviceType = client.deviceType
-        }
-        LoginLog.ipaddr = ip
-        LoginLog.loginLocation = address
-        LoginLog.browser = browser
-        LoginLog.os = os
-        LoginLog.msg = loginLogEvent.message
+        val loginLog = SysLoginLogBo()
+        loginLog.tenantId = loginLogEvent.tenantId
+        loginLog.userName = loginLogEvent.username
+        loginLog.clientKey = loginLogEvent.clientKey
+        loginLog.deviceType = loginLogEvent.deviceType
+        loginLog.ipaddr = loginLogEvent.ip
+        loginLog.loginLocation = address
+        loginLog.browser = browser
+        loginLog.os = os
+        loginLog.msg = loginLogEvent.message
         // 日志状态
         if (StringUtils.equalsAny(loginLogEvent.status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
-            LoginLog.status = Constants.SUCCESS
+            loginLog.status = Constants.SUCCESS
         } else if (Constants.LOGIN_FAIL == loginLogEvent.status) {
-            LoginLog.status = Constants.FAIL
+            loginLog.status = Constants.FAIL
         }
         // 插入数据
-        insertLoginLog(LoginLog)
+        insertLoginLog(loginLog)
     }
 
     private fun getBlock(msg: Any?): String {

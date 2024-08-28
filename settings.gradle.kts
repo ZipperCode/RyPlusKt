@@ -37,3 +37,5 @@ include("modules:system")
 include("server")
 include("modules:system-storage")
 include("modules:system-tenant")
+include("modules:system-auth")
+findProject(":modules:system-auth")?.name = "system-auth"

@@ -23,7 +23,7 @@ import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.satoken.utils.LoginHelper.login
 import com.zipper.framework.tanent.helper.TenantHelper
 import com.zipper.framework.web.config.properties.CaptchaProperties
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.entity.SysClientEntity
 import com.zipper.modules.system.domain.entity.SysUserEntity
 import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.modules.system.mapper.SysUserMapper
@@ -45,7 +45,7 @@ class PasswordAuthStrategy(
     private val userMapper: SysUserMapper
 ) : IAuthStrategy {
     override fun login(body: String, client: SysClientEntity): LoginVo {
-        val loginBody = parseObject(body, PasswordLoginBody::class.java)!!
+        val loginBody = parseObject(body, PasswordLoginBody::class.java)
         validate(loginBody)
         val tenantId = loginBody.tenantId ?:""
         val username = loginBody.username ?: ""

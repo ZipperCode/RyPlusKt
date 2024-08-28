@@ -83,4 +83,11 @@ object SpringUtilExt : SpringUtil() {
     inline fun <reified T> getBeanByType(clazz: Class<out T>): T {
         return getBeanFactory().getBean(clazz)
     }
+    inline fun <reified T> getBeanByTypeOrNull(clazz: Class<out T>): T? {
+        return try {
+            getBeanFactory().getBean(clazz)
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

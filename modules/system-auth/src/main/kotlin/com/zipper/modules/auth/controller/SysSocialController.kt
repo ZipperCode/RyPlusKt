@@ -1,10 +1,10 @@
-package com.zipper.modules.system.controller.system
+package com.zipper.modules.auth.controller
 
 import com.zipper.framework.core.domain.R
 import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.web.core.BaseController
-import com.zipper.modules.system.domain.vo.SysSocialVo
-import com.zipper.modules.system.service.social.ISysSocialService
+import com.zipper.modules.auth.domain.vo.SysSocialVo
+import com.zipper.modules.auth.service.ISysSocialService
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,6 +27,6 @@ class SysSocialController(
      */
     @GetMapping("/list")
     fun list(): R<List<SysSocialVo>> {
-        return R.ok<List<SysSocialVo>>(socialUserService.queryListByUserId(LoginHelper.getUserId()))
+        return R.ok(socialUserService.queryListByUserId(LoginHelper.getUserId()))
     }
 }

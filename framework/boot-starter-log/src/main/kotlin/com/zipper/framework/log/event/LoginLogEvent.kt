@@ -1,5 +1,6 @@
 package com.zipper.framework.log.event
 
+import cn.hutool.http.useragent.UserAgent
 import jakarta.servlet.http.HttpServletRequest
 import java.io.Serial
 import java.io.Serializable
@@ -29,11 +30,13 @@ class LoginLogEvent constructor(
      */
     val message: String? = null,
 
-    /**
-     * 请求体
-     */
-    val request: HttpServletRequest? = null,
+    val userAgent: UserAgent = UserAgent(),
 
+    val ip: String? = null,
+
+    val clientKey: String? = null,
+
+    val deviceType: String? = null,
     /**
      * 其他参数
      */

@@ -1,43 +1,39 @@
-package com.zipper.modules.system.domain.bo
+package com.zipper.modules.auth.domain.param
 
-import com.zipper.framework.mybatis.core.domain.BaseEntity
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.framework.core.validate.AddGroup
+import com.zipper.framework.core.validate.EditGroup
+import com.zipper.framework.mybatis.core.domain.BaseMixinVo
+import com.zipper.modules.auth.domain.SysClientMixin
+import com.zipper.modules.auth.domain.entity.SysClientEntity
 import io.github.linpeilie.annotations.AutoMapper
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import com.zipper.framework.core.validate.AddGroup
-import com.zipper.framework.core.validate.EditGroup
 
-/**
- * 授权管理业务对象 sys_client
- *
- * @author Michelle.Chung
- * @date 2023-05-15
- */
 @AutoMapper(target = SysClientEntity::class, reverseConvertGenerate = false)
-class SysClientBo : BaseEntity() {
+class SysClientSaveParam : BaseMixinVo(), SysClientMixin {
+
     /**
      * id
      */
     @field:NotNull(message = "id不能为空", groups = [EditGroup::class])
-    var id: Long? = null
+    override var id: Long? = null
 
     /**
      * 客户端id
      */
-    var clientId: String? = null
+    override var clientId: String? = null
 
     /**
      * 客户端key
      */
     @field:NotBlank(message = "客户端key不能为空", groups = [AddGroup::class, EditGroup::class])
-    var clientKey: String = ""
+    override var clientKey: String? = ""
 
     /**
      * 客户端秘钥
      */
     @field:NotBlank(message = "客户端秘钥不能为空", groups = [AddGroup::class, EditGroup::class])
-    var clientSecret: String = ""
+    override var clientSecret: String? = ""
 
     /**
      * 授权类型
@@ -48,25 +44,25 @@ class SysClientBo : BaseEntity() {
     /**
      * 授权类型
      */
-    var grantType: String? = null
+    override var grantType: String? = null
 
     /**
      * 设备类型
      */
-    var deviceType: String? = null
+    override var deviceType: String? = null
 
     /**
      * token活跃超时时间
      */
-    var activeTimeout: Long? = null
+    override var activeTimeout: Long? = null
 
     /**
      * token固定超时时间
      */
-    var timeout: Long? = null
+    override var timeout: Long? = null
 
     /**
      * 状态（0正常 1停用）
      */
-    var status: String? = null
+    override var status: String? = null
 }

@@ -2,7 +2,7 @@ package com.zipper.server.web.service
 
 import com.zipper.framework.core.exception.ServiceException
 import com.zipper.framework.core.utils.SpringUtilExt
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.entity.SysClientEntity
 import com.zipper.server.web.domain.vo.LoginVo
 
 

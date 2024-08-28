@@ -21,7 +21,7 @@ import com.zipper.framework.redis.utils.RedisUtils
 import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.satoken.utils.LoginHelper.login
 import com.zipper.framework.tanent.helper.TenantHelper
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.entity.SysClientEntity
 import com.zipper.modules.system.domain.entity.SysUserEntity
 import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.modules.system.mapper.SysUserMapper
@@ -43,7 +43,7 @@ class EmailAuthStrategy(
     private val userMapper: SysUserMapper
 ) : IAuthStrategy {
     override fun login(body: String, client: SysClientEntity): LoginVo {
-        val loginBody = parseObject(body, EmailLoginBody::class.java)!!
+        val loginBody = parseObject(body, EmailLoginBody::class.java)
         validate(loginBody)
         val tenantId = loginBody.tenantId ?: ""
         val email = loginBody.email ?: ""

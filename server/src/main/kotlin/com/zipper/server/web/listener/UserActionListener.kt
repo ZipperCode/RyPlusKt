@@ -16,6 +16,7 @@ import com.zipper.framework.core.utils.ip.AddressUtils
 import com.zipper.framework.log.event.LoginLogEvent
 import com.zipper.framework.redis.utils.RedisUtils
 import com.zipper.framework.satoken.utils.LoginHelper
+import com.zipper.server.web.helper.LoginLogEventHelper
 import com.zipper.server.web.service.SysLoginService
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -26,7 +27,10 @@ import java.time.Duration
  * @author Lion Li
  */
 @Component
-class UserActionListener(private val tokenConfig: SaTokenConfig, private val loginService: SysLoginService) : SaTokenListener {
+class UserActionListener(
+    private val tokenConfig: SaTokenConfig,
+    private val loginService: SysLoginService
+) : SaTokenListener {
     /**
      * 每次登录时触发
      */
@@ -51,14 +55,13 @@ class UserActionListener(private val tokenConfig: SaTokenConfig, private val log
             RedisUtils.setCacheObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()))
         }
         // 记录登录日志
-        val loginEvent = LoginLogEvent(
+        LoginLogEventHelper.postRecord(
             tenantId = user?.tenantId,
             username = user?.username,
             status = Constants.LOGIN_SUCCESS,
             message = MessageUtils.message("user.login.success"),
-            request = getRequest()
         )
-        SpringUtilExt.context().publishEvent(loginEvent)
+
         // 更新登录信息
         loginService.recordLoginInfo(user?.userId, ip)
         log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue)

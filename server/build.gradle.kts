@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":modules:system"))
     implementation(project(":modules:system-storage"))
     implementation(project(":modules:system-tenant"))
+    implementation(project(":modules:system-auth"))
 
     implementation(Libs.Dromara.Sms4j.Core)
 

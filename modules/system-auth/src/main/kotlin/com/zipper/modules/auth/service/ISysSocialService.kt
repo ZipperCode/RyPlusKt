@@ -1,7 +1,7 @@
-package com.zipper.modules.system.service.social
+package com.zipper.modules.auth.service
 
-import com.zipper.modules.system.domain.bo.SysSocialBo
-import com.zipper.modules.system.domain.vo.SysSocialVo
+import com.zipper.modules.auth.domain.param.SysSocialSaveParam
+import com.zipper.modules.auth.domain.vo.SysSocialVo
 
 
 /**
@@ -28,12 +28,12 @@ interface ISysSocialService {
     /**
      * 新增授权关系
      */
-    fun insertByBo(bo: SysSocialBo): Boolean
+    fun insert(param: SysSocialSaveParam): Boolean
 
     /**
      * 更新社会化关系
      */
-    fun updateByBo(bo: SysSocialBo): Boolean
+    fun update(param: SysSocialSaveParam): Boolean
 
     /**
      * 删除社会化关系信息

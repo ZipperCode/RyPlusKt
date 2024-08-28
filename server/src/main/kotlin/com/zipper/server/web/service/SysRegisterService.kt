@@ -2,6 +2,8 @@ package com.zipper.server.web.service
 
 import cn.dev33.satoken.secure.BCrypt
 import cn.hutool.core.util.ObjectUtil
+import cn.hutool.extra.servlet.JakartaServletUtil
+import cn.hutool.http.useragent.UserAgentUtil
 import com.zipper.framework.core.constant.Constants
 import com.zipper.framework.core.constant.GlobalConstants
 import com.zipper.framework.core.domain.model.RegisterBody
@@ -11,17 +13,21 @@ import com.zipper.framework.core.exception.user.CaptchaExpireException
 import com.zipper.framework.core.exception.user.UserException
 import com.zipper.framework.core.utils.MessageUtils.message
 import com.zipper.framework.core.utils.ServletUtils
+import com.zipper.framework.core.utils.SpringUtilExt
 import com.zipper.framework.core.utils.SpringUtilExt.context
 import com.zipper.framework.log.event.LoginLogEvent
 import com.zipper.framework.mybatis.core.MybatisKt
 import com.zipper.framework.redis.utils.RedisUtils.deleteObject
 import com.zipper.framework.redis.utils.RedisUtils.getCacheObject
+import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.tanent.helper.TenantHelper
 import com.zipper.framework.web.config.properties.CaptchaProperties
+import com.zipper.modules.auth.service.ISysClientService
 import com.zipper.modules.system.domain.bo.SysUserBo
 import com.zipper.modules.system.domain.entity.SysUserEntity
 import com.zipper.modules.system.mapper.SysUserMapper
 import com.zipper.modules.system.service.user.ISysUserService
+import com.zipper.server.web.helper.LoginLogEventHelper
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 
@@ -71,7 +77,7 @@ class SysRegisterService(
         if (!regFlag) {
             throw UserException("user.register.error")
         }
-        recordLogininfor(tenantId, username, Constants.REGISTER, message("user.register.success"))
+        LoginLogEventHelper.postRecord(tenantId, username, Constants.REGISTER, message("user.register.success"))
     }
 
     /**
@@ -86,33 +92,12 @@ class SysRegisterService(
         val captcha = getCacheObject<String>(verifyKey)
         deleteObject(verifyKey)
         if (captcha == null) {
-            recordLogininfor(tenantId, username, Constants.REGISTER, message("user.jcaptcha.expire"))
+            LoginLogEventHelper.postRecord(tenantId, username, Constants.REGISTER, message("user.jcaptcha.error"))
             throw CaptchaExpireException()
         }
         if (!code.equals(captcha, ignoreCase = true)) {
-            recordLogininfor(tenantId, username, Constants.REGISTER, message("user.jcaptcha.error"))
+            LoginLogEventHelper.postRecord(tenantId, username, Constants.REGISTER, message("user.jcaptcha.error"))
             throw CaptchaException()
         }
-    }
-
-    /**
-     * 记录登录信息
-     *
-     * @param tenantId 租户ID
-     * @param username 用户名
-     * @param status   状态
-     * @param message  消息内容
-     * @return
-     */
-    private fun recordLogininfor(tenantId: String, username: String, status: String, message: String) {
-        context().publishEvent(
-            LoginLogEvent(
-                tenantId = tenantId,
-                username = username,
-                status = status,
-                message = message,
-                request = ServletUtils.getRequest()
-            )
-        )
     }
 }

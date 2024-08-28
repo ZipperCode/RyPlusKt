@@ -11,7 +11,7 @@ import com.zipper.framework.core.utils.ValidatorUtils.validate
 import com.zipper.framework.json.utils.JsonUtils.parseObject
 import com.zipper.framework.satoken.utils.LoginHelper
 import com.zipper.framework.satoken.utils.LoginHelper.login
-import com.zipper.modules.system.domain.entity.SysClientEntity
+import com.zipper.modules.auth.domain.entity.SysClientEntity
 import com.zipper.modules.system.domain.vo.SysUserVo
 import com.zipper.server.web.domain.vo.LoginVo
 import com.zipper.server.web.service.IAuthStrategy
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service
 @Service("xcx" + IAuthStrategy.BASE_NAME)
 class XcxAuthStrategy(private val loginService: SysLoginService) : IAuthStrategy {
     override fun login(body: String, client: SysClientEntity): LoginVo {
-        val loginBody = parseObject(body, XcxLoginBody::class.java)!!
+        val loginBody = parseObject(body, XcxLoginBody::class.java)
         validate(loginBody)
         // xcxCode 为 小程序调用 wx.login 授权后获取
         val xcxCode = loginBody.xcxCode
