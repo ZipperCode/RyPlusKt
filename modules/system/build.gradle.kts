@@ -23,7 +23,7 @@ dependencies {
     implementation(project(":framework:common-sensitive"))
     implementation(project(":framework:common-excel"))
 
-    implementation(Libs.Mybatis.PlusBootStarter)
+    implementation(Libs.BaoMiDou.MybatisPlus.PlusBootStarter)
 
 
     implementation(Libs.Apache.Commons.Lang3)
@@ -35,5 +35,5 @@ dependencies {
 
     implementation(Libs.Redisson.Core)
 
-    kapt(Libs.Mybatis.Generator)
+    kapt(Libs.BaoMiDou.MybatisPlus.Generator)
 }

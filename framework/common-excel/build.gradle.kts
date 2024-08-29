@@ -6,7 +6,5 @@ plugins {
 
 dependencies {
     implementation(project(":framework:boot-starter-core"))
-    implementation(Libs.SpringBoot.Web)
-    implementation(Libs.Apache.Commons.Lang3)
     api(Libs.Alibaba.EasyExcel)
 }

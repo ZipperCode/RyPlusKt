@@ -8,5 +8,4 @@ dependencies {
     implementation(project(":framework:boot-starter-core"))
     implementation(project(":framework:boot-starter-redis"))
     implementation(Libs.Redisson.Core)
-    implementation(Libs.Apache.Commons.Lang3)
 }

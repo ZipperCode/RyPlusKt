@@ -26,15 +26,6 @@ class ModulePlugin : Plugin<Project> {
                 mavenCentral()
             }
 
-            dependencies {
-                // kotlin
-//                implementation(Libs.Kotlin.stdLib)
-                implementation(Libs.Kotlin.reflect)
-
-            }
-
-
-
             allOpen {
                 annotations(
                     listOf(

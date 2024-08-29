@@ -54,13 +54,6 @@ object Libs {
         const val Validator = "org.hibernate:hibernate-validator:8.0.1.Final"
     }
 
-    object Mybatis {
-        const val BootStarter = "org.mybatis.spring.boot:mybatis-spring-boot-starter:${Versions.Mybatis}"
-        const val PlusBootStarter = "com.baomidou:mybatis-plus-spring-boot3-starter:${Versions.MybatisPlus}"
-        const val Generator = "com.baomidou:mybatis-plus-generator:${Versions.MybatisPlus}"
-        const val Annotation = "com.baomidou:mybatis-plus-annotation:${Versions.MybatisPlus}"
-    }
-
     object Mysql{
         const val Connector = "com.mysql:mysql-connector-j:8.2.0"
     }

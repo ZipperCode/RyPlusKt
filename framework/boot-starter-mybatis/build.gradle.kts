@@ -8,8 +8,6 @@ dependencies {
     implementation(project(":framework:boot-starter-core"))
     implementation(project(":framework:boot-starter-satoken"))
 
-    implementation(Libs.SpringBoot.Web)
-
     implementation(Libs.BaoMiDou.Mybatis.BootStarter)
     implementation(Libs.BaoMiDou.MybatisPlus.Generator)
     implementation(Libs.BaoMiDou.MybatisPlus.Annotation)
@@ -20,7 +18,7 @@ dependencies {
 
     implementation(Libs.Jackson.ModuleKotlin)
 
-    implementation(Libs.Apache.Commons.Lang3)
+//    implementation(Libs.Apache.Commons.Lang3)
 
     implementation(Libs.Mysql.Connector)
 }

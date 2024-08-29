@@ -21,25 +21,25 @@ class LibraryPlugin : Plugin<Project> {
             apply(plugin = "io.spring.dependency-management")
 
             dependencies {
-                lombok()
-                hutool()
-                jakarta()
-                mapStruct()
-                springAutoConfiguration()
-
-//                implementation(Libs.SpringBoot.Starter) {
-//                    exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+                applyCommonLibrary()
+//                lombok()
+//                hutool()
+//                jakarta()
+//                mapStruct()
+//                springAutoConfiguration()
+//
+////                implementation(Libs.SpringBoot.Starter) {
+////                    exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+////                }
+//                implementation(Libs.SpringBoot.Web) {
+//                     exclude("org.springframework.boot", "spring-boot-starter-tomcat")
 //                }
-                implementation(Libs.SpringBoot.Web) {
-                     exclude("org.springframework.boot", "spring-boot-starter-tomcat")
-                }
-                implementation(Libs.SpringBoot.Underow)
-                implementation(Libs.SpringBoot.Validation)
-                implementation(Libs.AspectJ.Core)
-                implementation(Libs.Apache.Commons.Lang3)
+//                implementation(Libs.SpringBoot.Underow)
+//                implementation(Libs.SpringBoot.Validation)
+//                implementation(Libs.AspectJ.Core)
+//                implementation(Libs.Apache.Commons.Lang3)
 
             }
-
             try {
                 val kapt = project.extensions.getByName("kapt")
                 val method = kapt.javaClass.getDeclaredMethod("setKeepJavacAnnotationProcessors", Boolean::class.java)

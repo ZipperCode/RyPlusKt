@@ -9,6 +9,4 @@ dependencies {
     implementation(project(":framework:boot-starter-satoken"))
     implementation(project(":framework:boot-starter-json"))
     implementation(Libs.Alibaba.ThreadLocal)
-    implementation(Libs.SpringBoot.Web)
-    implementation(Libs.Apache.Commons.Lang3)
 }
